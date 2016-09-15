@@ -1,7 +1,12 @@
 //
+// global variables and functions
+//
+var apdDataBase;
+
+//
 // Function: Read in nad init the apd database
 //
-  function initDatabase (apdDataArray) {
+  function initDatabase () {
    $.ajax({
         url: "https://data.austintexas.gov/resource/rkrg-9tez.json",
         async: false,
@@ -10,66 +15,46 @@
           // "$limit" : 10,
           "$$app_token" : "jdmsP3hiF9ZYMZMlJTaiBOKly"
         }
-    }).done(function(data) {  
-
-      i=0;
-      j=0;
-      this.apdDataArray = apdDataArray;
-      
-    for(var i=0; i < 1000; i++) {
-        this.apdDataArray[j].crime_type = data[i].crime_type;
-        this.apdDataArray[j].address = data[i].address;
-        this.apdDataArray[j].date = data[i].date;
-       j++
-      }
-     });
+    }).done(function(data) {     
+      apdDataBase = data;
+    }); 
   }
 
 //
 // Function: Get data
 //
-  function getData (apdData, incidentArray, incidentCount, crime_type) {    
-    this.incidentArray = incidentArray;
-    this.apdDataArray = apdDataArray;
+  function getData (incidentList, incidentMax) {   
 
-    i=0;
-    j=0;
-    for(var i=this.apdDataArray.length-1; i > this.apdDataArray.length - incidentCount; i--) {
-        this.incidentArray[j].crime_type = this.apdDataArray[i].crime_type;
-        this.incidentArray[j].address = this.apdDataArray[i].address;
-        this.incidentArray[j].date = this.apdDataArray[i].date;
-       j++
-      } 
-  }
+    var incidentArray = new Array();  // to be returned to caller
+ 
+    apdIndex = apdDataBase.length;
+    incidentCounter =0;
+    iIndex = 0;
 
-//
-// **** App begins here
-//
 
-// Initialize two arrays
-  var incidentArray = new Array();
-  var iMax = 20;
+    while(apdIndex > 0) {  // search the apd database starting at the end
+      apdIndex--;
+      
+      iIndex = 0;     
+      while (iIndex < incidentList.length) {  // compare the apd record to the list of crimes we are looking for
+        if (apdDataBase[apdIndex].crime_type.includes(incidentList[iIndex])) {
+          incidentArray[incidentCounter]=new Array();  // GOT A MATCH!  Log this incident to the array to be returned
+          incidentArray[incidentCounter].crime_type = apdDataBase[apdIndex].crime_type;
+          incidentArray[incidentCounter].address = apdDataBase[apdIndex].address;
+          incidentArray[incidentCounter].date = apdDataBase[apdIndex].date;
+          incidentCounter++;
+          iIndex = incidentList.length;  //break out of this inner while loop because we got a match
+          } // end of if
+        iIndex++;
+        } //end of inner while
 
-  var apdDataArray = new Array();
-  var fMax = 1000;
-
-  for (i=0; i<fMax; i++) {
-        apdDataArray[i]=new Array();
-        apdDataArray[i].address = "empty address";
-        apdDataArray[i].crime_type = "empty crime";
-        apdDataArray[i].date = "empty date";
+        if (incidentCounter == incidentMax) {  //if the return array is full, break out of the outer while
+         apdIndex = -1;
         }
+      
+    } //end of outer while
+    return (incidentArray);
+  } // end of function
 
-  for (i=0; i<fMax; i++) {
-        incidentArray[i]=new Array();
-        incidentArray[i].address = "empty address";
-        incidentArray[i].crime_type = "empty crime";
-        incidentArray[i].date = "empty date";
-        }      
 
-// Test the functions
-  initDatabase( apdDataArray);
-  debugger;
-
-  getData (apdDataArray, incidentArray, iMax);
-  debugger;
+ 
