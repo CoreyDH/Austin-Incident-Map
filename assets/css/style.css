@@ -6,13 +6,75 @@ html, body {
   padding: 0;
 }
 
+a {
+  color: #c5b14b;
+}
+
+a:hover {
+  color: #988c4e;
+  text-decoration: none;
+}
+
 .navbar {
   border-radius: 0;
   margin-bottom: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+.navbar-toggle {
+  display: block;
+}
+
+.top-bar {
+  background-color: #161714;
+  height: 12px;
+}
+
+.logo {
+  color: #fff;
+  padding: 20px 15px;
+  font-size: 18px;
+  line-height: 20px;
+  height: 60px;
 }
 
 #map {
     margin: 0px;
     width: 100%;
     height: 100%;
+    margin-left: -225px;
+    transition: 0.3s;
+}
+
+#map.active {
+  margin-left: 0;
+}
+
+.menu-wrapper {
+  width: 225px;
+  height: 100%;
+  padding: 15px;
+  background-color: #f7f7f7;
+  overflow-x: hidden;
+  position: fixed;
+  top: 62px;
+  right: 0;
+  font-size: 20px;
+  box-shadow: 3px 0px 10px #000;
+  transition: 0.3s;
+}
+
+.menu-wrapper .active {
+  right: -185px;
+}
+.menu-wrapper i.fa {
+  color: #3e3f3a;
+  padding: 5px;
+}
+
+.menu li:first {
+  background: #222;
 }
