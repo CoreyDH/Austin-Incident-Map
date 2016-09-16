@@ -21,7 +21,7 @@ a:hover, a:focus {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 999;
+  z-index: 900;
 }
 
 .navbar-toggle {
@@ -56,18 +56,27 @@ div#map.active {
 .menu-wrapper {
   width: 275px;
   height: 100%;
-  background-color: #f7f7f7;
+  background-color: #6b3c26;
   overflow-x: hidden;
   position: fixed;
-  top: 62px;
+  top: 0;
   right: 0;
   font-size: 20px;
-  border-left: 1px solid #afafaf;
+  /*border-left: 1px solid #afafaf;*/
+  z-index: 1000;
   transition: 0.3s;
 }
 
-div.menu-wrapper.active {
+.menu-wrapper #category-filters {
+  display: block;
+}
+
+div.menu-wrapper.closed {
   right: -230px;
+}
+
+div.menu-wrapper.closed #category-filters {
+  display: none;
 }
 
 .menu-wrapper i.fa {
@@ -76,7 +85,7 @@ div.menu-wrapper.active {
 }
 
 .menu li {
-  padding: 15px;
+  padding: 17px 15px;
 }
 
 .menu-title {

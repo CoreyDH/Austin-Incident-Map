@@ -3,7 +3,7 @@
 
     $('.menu-title').on('click', function(event) {
 
-      $('.menu-wrapper').toggleClass('active');
+      $('.menu-wrapper').toggleClass('closed');
       $('#map').toggleClass('active');
 
     });
