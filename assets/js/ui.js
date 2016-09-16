@@ -1,7 +1,12 @@
 (function($) {
-
   $(function() {
-    console.log('test');
-  });
 
+    $('.menu-title').on('click', function(event) {
+
+      $('.menu-wrapper').toggleClass('closed');
+      $('#map').toggleClass('active');
+
+    });
+
+  });
 })(jQuery);

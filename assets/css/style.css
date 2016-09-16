@@ -1,12 +1,102 @@
 /*Css displaying the map full screen*/
 html, body {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-      }
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #c5b14b;
+}
+
+a:hover, a:focus {
+  color: #988c4e;
+  text-decoration: none;
+}
+
+.navbar {
+  border-radius: 0;
+  margin-bottom: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 900;
+}
+
+.navbar-toggle {
+  display: block;
+}
+
+.top-bar {
+  background-color: #161714;
+  height: 12px;
+}
+
+.logo {
+  color: #fff;
+  padding: 20px 15px;
+  font-size: 18px;
+  line-height: 20px;
+  height: 60px;
+}
+
 #map {
     margin: 0px;
     width: 100%;
     height: 100%;
+    margin-left: -275px;
+    transition: 0.3s;
+}
+
+div#map.active {
+  margin-left: -45px;
+}
+
+.menu-wrapper {
+  width: 275px;
+  height: 100%;
+  background-color: #6b3c26;
+  overflow-x: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+  /*border-left: 1px solid #afafaf;*/
+  z-index: 1000;
+  transition: 0.3s;
+}
+
+.menu-wrapper #category-filters {
+  display: block;
+}
+
+div.menu-wrapper.closed {
+  right: -230px;
+}
+
+div.menu-wrapper.closed #category-filters {
+  display: none;
+}
+
+.menu-wrapper i.fa {
+  color: #3e3f3a;
+  margin-right: 10px;
+}
+
+.menu li {
+  padding: 17px 15px;
+}
+
+.menu-title {
+  background: #181917;
+  text-transform: uppercase;
+}
+
+.menu-title a {
+  color: #fff;
+}
+
+.menu-title i.fa {
+  color: #a0a0a0;
 }

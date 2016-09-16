@@ -1,24 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Austin Incident Map</title>
-  <link rel="stylesheet" href="assets/css/reset.css">
-  <link rel="stylesheet" href="https://bootswatch.com/cosmo/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-  <div id="map"></div>
-  <!-- Vendor -->
-  <script src="assets/vendor/jquery/jquery-3.1.0.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApfg7bCNXiH1vwNu-fDcZ6lQI6QGrV_0A&callback=initMap" async defer></script>
 
-  <!-- Scripts -->
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/map.js"></script>
-  <script src="assets/js/ui.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Austin Incident Map</title>
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/vendor/components-font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-default">
+          <div class="navbar-header">
+              <a class="navbar-brand" href="#">Austin City Incident Map</a>
+          </div>
+        </nav>
+    </header>
+    <div id="map"></div>
+    <div class="menu-wrapper">
+      <ul class="menu">
+        <li class="menu-title"><a href="#" class="menu-toggle"><i class="fa fa-bars"></i> Menu</a></li>
+        <li>
+          <div id="category-filters" class="panel panel-default">
+            <div class="panel-heading">Filter By Category</div>
+            <div class="panel-body">
+              <ul>
+                <li><input type="checkbox" name="category" value="violent"> <label for="category">Violent</label></li>
+                <li><input type="checkbox" name="category" value="property"> <label for="category">Property Crime</label></li>
+                <li><input type="checkbox" name="category" value="accident"> <label for="category">Accident</label></li>
+                <li><input type="checkbox" name="category" value="drug"> <label for="category">Drug Related</label></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Vendor -->
+    <script src="assets/vendor/jquery/jquery-3.1.0.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApfg7bCNXiH1vwNu-fDcZ6lQI6QGrV_0A&callback=initMap" async defer></script>
+
+    <!-- Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/map.js"></script>
+    <script src="assets/js/ui.js"></script>
 </body>
 </html>
