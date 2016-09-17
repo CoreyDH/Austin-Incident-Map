@@ -1,4 +1,4 @@
-/*Css displaying the map full screen*/
+/*General*/
 html, body {
   height: 100%;
   width: 100%;
@@ -41,6 +41,11 @@ a:hover, a:focus {
   height: 60px;
 }
 
+.panel {
+  margin: 10px 0;
+}
+
+/*Map*/
 #map {
     margin: 0px;
     width: 100%;
@@ -53,21 +58,20 @@ div#map.active {
   margin-left: -63px;
 }
 
+/*Menu*/
 .menu-wrapper {
   width: 275px;
   height: 100%;
   background-color: #6b3c26;
   overflow-x: hidden;
   position: fixed;
-  top: 62px;
+  top: 0;
   right: 0;
   font-size: 20px;
-  /*border-left: 1px solid #afafaf;*/
-  z-index: 1000;
   transition: 0.3s;
 }
 
-.menu-wrapper .category-filters-wrapper {
+.menu-wrapper .filters-wrapper {
   display: block;
 }
 
@@ -75,7 +79,7 @@ div.menu-wrapper.closed {
   right: -215px;
 }
 
-div.menu-wrapper.closed .category-filters-wrapper {
+div.menu-wrapper.closed .filters-wrapper {
   display: none;
 }
 
@@ -84,12 +88,18 @@ div.menu-wrapper.closed .category-filters-wrapper {
   margin-right: 10px;
 }
 
-.menu > li {
-  padding: 17px 15px;
+.menu {
+  margin-top: 62px;
 }
 
+.menu > li {
+  padding: 0 15px;;
+}
+
+/* Menu Title */
 .menu-title {
   background: #181917;
+  padding: 17px 15px !important;
   text-transform: uppercase;
 }
 
@@ -130,4 +140,40 @@ div.menu-wrapper.closed .category-filters-wrapper {
 /* Categories */
 #category-filters > li{
   cursor: pointer;
+}
+
+/* Date */
+#date-filters label {
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+#date-filters input[type="text"] {
+  height: 30px;
+  padding: 5px;
+}
+
+#search {
+  /*background-color: blue;*/
+}
+
+@media screen and (max-width: 544px) {
+  
+  .menu-wrapper {
+    width: 100%;
+  }
+
+  div.menu-wrapper.closed {
+    right: -544px;
+  }
+
+  .menu-title {
+    display: none;
+  }
+
+  div#map.active {
+    margin-left: 0px;
+  }
+
+
 }

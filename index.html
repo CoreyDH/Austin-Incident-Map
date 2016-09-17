@@ -8,16 +8,27 @@
     <title>Austin Incident Map</title>
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/jquery-ui.min.css">
+    <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/theme.css">
     <link rel="stylesheet" href="assets/vendor/components-font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-default">
+        <nav class="navbar navbar-default col-xs-10">
           <div class="navbar-header">
               <a class="navbar-brand" href="#">Austin City Incident Map</a>
           </div>
+          <div class="col-xs-2 pull-right">
+            <button type="button" class="navbar-toggle collapsed">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+
         </nav>
     </header>
     <div id="map"></div>
@@ -25,7 +36,7 @@
       <ul class="menu">
         <li class="menu-title"><a href="#" class="menu-toggle"><i class="fa fa-bars"></i> Menu</a></li>
         <li>
-          <div class="panel panel-default category-filters-wrapper">
+          <div class="panel panel-default filters-wrapper">
             <div class="panel-heading">Filter By Category</div>
             <div class="panel-body">
               <ul id="category-filters">
@@ -38,11 +49,52 @@
             </div>
           </div>
         </li>
+        <li>
+          <div class="panel panel-default filters-wrapper">
+            <div class="panel-heading">Filter By Date</div>
+            <div class="panel-body">
+              <ul id="date-filters">
+                <li class="form-inline">
+                  <div class="form-group">
+                    <label for="date-from">From</label>
+                    <input type="text" class="form-control" name="date-from" id="date-from">
+                  </div>
+                </li>
+                <li>
+                  <div class="form-group">
+                  <label for="date-to">To</label>
+                  <input type="text" class="form-control" name="date-to" id="date-to">
+                </div>
+              </li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="panel panel-default filters-wrapper">
+            <div class="panel-heading">Limit Search By</div>
+            <div class="panel-body">
+                <select name="limit" id="limit" class="form-control">
+                  <option value="100">100</option>
+                  <option value="250" selected>250</option>
+                  <option value="500">500</option>
+                  <option value="1000">1000</option>
+                  <option value="5000">5000</option>
+                </select>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="text-center search-wrapper">
+            <button id="search" class="btn btn-warning">Search By Parameters</button>
+          </div>
+        </li>
       </ul>
     </div>
 
     <!-- Vendor -->
     <script src="assets/vendor/jquery/jquery-3.1.0.min.js"></script>
+    <script src="assets/vendor/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApfg7bCNXiH1vwNu-fDcZ6lQI6QGrV_0A&callback=initMap" async defer></script>
 
