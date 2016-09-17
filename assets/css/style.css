@@ -21,6 +21,7 @@ a:hover, a:focus {
   position: fixed;
   top: 0;
   width: 100%;
+  background-color: #46403b;
   z-index: 900;
 }
 
@@ -89,7 +90,7 @@ div.menu-wrapper.closed .category-filters-wrapper {
 }
 
 .menu-title {
-  background: #181917;
+  background: #272624;
   text-transform: uppercase;
 }
 

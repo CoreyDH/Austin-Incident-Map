@@ -10,7 +10,7 @@
 
     $('#category-filters > li').on('click', function(event) {
       $(this).toggleClass('selected');
-      $(this).find('input[type="checkbox"]').prop('checked');
+      $(this).find('input[type="checkbox"]').attr('checked');
     });
 
   });
