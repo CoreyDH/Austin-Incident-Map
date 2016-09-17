@@ -6,35 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Austin Incident Map</title>
+
+    <!-- Vendor -->
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
     <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/jquery-ui.min.css">
     <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/theme.css">
     <link rel="stylesheet" href="assets/vendor/components-font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/vendor/nanoscroller/nanoscroller.css">
+
+    <!-- Main Style -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-default col-xs-10">
-          <div class="navbar-header">
+        <nav class="navbar navbar-default">
+          <div class="navbar-header col-xs-8">
               <a class="navbar-brand" href="#">Austin City Incident Map</a>
           </div>
-          <div class="col-xs-2 pull-right">
+          <div class="col-xs-4 pull-right">
             <button type="button" class="navbar-toggle collapsed">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
+              <div class="menu-icon">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </div>
+              <span class="hidden-xs">Menu</span>
             </button>
           </div>
 
         </nav>
     </header>
     <div id="map"></div>
-    <div class="menu-wrapper">
-      <ul class="menu">
-        <li class="menu-title"><a href="#" class="menu-toggle"><i class="fa fa-bars"></i> Menu</a></li>
+    <div class="menu-wrapper nano">
+      <ul class="menu nano-content">
         <li>
           <div class="panel panel-default filters-wrapper">
             <div class="panel-heading">Filter By Category</div>
@@ -86,7 +93,8 @@
         </li>
         <li>
           <div class="text-center search-wrapper">
-            <button id="search" class="btn btn-warning">Search By Parameters</button>
+            <a id="search" class="btn btn-warning">Search</a>
+            <a id="clear" class="btn btn-primary">Clear</a>
           </div>
         </li>
       </ul>
@@ -97,6 +105,7 @@
     <script src="assets/vendor/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApfg7bCNXiH1vwNu-fDcZ6lQI6QGrV_0A&callback=initMap" async defer></script>
+    <script src="assets/vendor/nanoscroller/jquery.nanoscroller.min.js"></script>
 
     <!-- Scripts -->
     <script src="assets/js/data.js"></script>

@@ -1,10 +1,11 @@
 (function($) {
   $(function() {
 
+    // $(".nano").nanoScroller();
+
     $('.menu-title, .navbar-toggle').on('click', function(event) {
 
       $('.menu-wrapper').toggleClass('closed');
-      $('#map').toggleClass('active');
 
     });
 
