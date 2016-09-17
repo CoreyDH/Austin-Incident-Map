@@ -8,7 +8,7 @@
 </head>
 <body>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
- <script src="data.js"></script>
+ <script src="assets/js/data.js"></script>
 
 <script>
 
@@ -16,31 +16,13 @@
 // **** Test the data modeule here
 //
 
-	var violentCrimes = ["ASSAULT", "ASLT", "FORCED SODOMY", "KIDNAPPING", "RAPE", "MANSLAUGHTER", "MURDER"];
-	var propertyCrimes = ["BURGLARY", "THEFT", "BURG", "ROBBERY"];
-
 	initDatabase();  // init
 
-	var mySearchResults = getData (violentCrimes, 20);  // search for first 20 violent crimes
+  debugger;
 
-	 // console.log violent crimes
-	 	console.log ("VIOLENT CRIMES");
-  		var x;
-  		for (x=0;x<20;x++) {
-    	console.log (mySearchResults [ x]);
-  		}
+	var mySearchResults = getDataByKeyword ("KIDNAPPING", limit); // search for first 20 violent crimes
 
-
-	var mySearchResults = getData (propertyCrimes, 20);  // searh for first 20 property crimes
-
-  	// console.log property crimes
-  		console.log ("PROPERTY CRIMES");
-  		var x;
- 		for (x=0;x<20;x++) {
-    	console.log (mySearchResults [ x]);
-  		}
-
-  	alert ("Two searches completed");
+	
 
 </script>
 

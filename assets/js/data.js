@@ -13,10 +13,18 @@
           url: "https://data.austintexas.gov/resource/rkrg-9tez.json",
           type: "GET",
           data: {
-            "$$app_token" : "jdmsP3hiF9ZYMZMlJTaiBOKly"
+            "$$app_token" : "jdmsP3hiF9ZYMZMlJTaiBOKly", "$order" : "date"
           }
       }).done(function(data) {
         apdDataBase = data;
+
+        var i;
+        for (i = 95500; i >= 0; i = i - 100) {
+          console.log ( "i = ", i, "date = ", apdDataBase [i].date);
+        }
+
+        debugger;
+
         console.log('Success! Receive '+data.length+' records!');
 
         callback(true);
@@ -26,31 +34,61 @@
       });
     }
 
+
+{
+  keyword: 'test',
+  categories: ['violent', 'theft'],
+  dateRange: {
+    from: '09/14/2016',
+    to: '09/17/2016'
+  },
+  limit: 10
+}
+
+function getData(constraints) {
+
+  // merge defaults with constraints
+  
+
+
+
+}
   //
   // Function: Get data
   //
-    function getDataByCategory (category, limit) {
+    function getDataByCategory (constraints, limit) {
 
       var incidentArray = [];  // to be returned to caller
       var dbLength = apdDataBase.length;
       limit = limit || dbLength;
+      var crimes = [];
 
-      var crimes = getCrimeTypes(category);
+      for(var n = 0; n < constraints.categories.length; n++) {
+        crimes.push(getCrimeTypes[constraints.categories[n]]);
+      }
       console.log(limit);
-
+    
       if(crimes) {
 
         for(var i = dbLength-1; i > 0; i--) {
+          var j = 0;
+          while (j < crimes.length) {
 
-          if(crimes.indexOf(apdDataBase[i].crime_type) !== -1) {
-            incidentArray.push(apdDataBase[i]);
+            if(apdDataBase[i].crime_type.includes (crimes[j])) {           
+               incidentArray.push(apdDataBase[i]);
+               j = crimes.length;
+            } //if
+            else {
+              j++;
+            } //else
+          } // while
 
-            if(incidentArray.length === limit) {
-              break;
+
+          if(incidentArray.length === limit) {
+            break;
             }
-          }
-        }
-
+          } // for
+        
         return incidentArray;
 
       } else {
@@ -70,7 +108,7 @@
 
       for(var i = dbLength-1; i > 0; i--) {
 
-        if(apdDataBase[i].crime_type.indexOf(keyword) !== -1) {
+        if(apdDataBase[i].crime_type.includes(keyword)) {
           incidentArray.push(apdDataBase[i]);
 
           if(incidentArray.length === limit) {
@@ -108,7 +146,21 @@
 
     initDatabase(function(flag) {
       console.log(flag);
-      var mySearchResults = getDataByKeyword ("KIDNAPPING", 3); // search for first 20 violent crimes
+      
+      var mySearchResults = getDataByCategory ("drugs", 20); // search for first 20 crimes
+
+      var i;
+      console.log ("category search");
+      for (i=0; i<mySearchResults.length;i++)
+        console.log (mySearchResults[i]);
+
+      var mySearchResults2 = getDataByKeyword ("PIGEON", 20); // search for type
+      console.log ( "keyword search");
+      for (i=0; i<mySearchResults2.length;i++)
+        console.log (mySearchResults2[i]);
+
+
+      debugger;
     });
 
   });
