@@ -23,7 +23,7 @@
     <header>
         <nav class="navbar navbar-default">
           <div class="navbar-header col-xs-8">
-              <a class="navbar-brand" href="#">Austin City Incident Map</a>
+              <a class="navbar-brand" href="#"><i class="fa fa-star"></i> Austin City Incident Map</a>
           </div>
           <div class="col-xs-4 pull-right">
             <button type="button" class="navbar-toggle collapsed">
@@ -40,8 +40,19 @@
         </nav>
     </header>
     <div id="map"></div>
-    <div class="menu-wrapper nano">
-      <ul class="menu nano-content">
+    <div class="menu-wrapper">
+      <ul class="menu">
+        <li>
+          <div class="menu-subtitle">
+            <a href="#" data-toggle="collapse" data-target="#keyword" data-parent="#menu">Search By Keyword</a>
+          </div>
+          <div id="keyword" class="form-inline collapse in">
+            <div class="form-group">
+              <input type="text" class="form-control">
+              <a href="#" class="btn btn-danger">Search</a>
+            </div>
+          </div>
+        </li>
         <li>
           <div class="panel panel-default filters-wrapper">
             <div class="panel-heading">Filter By Category</div>

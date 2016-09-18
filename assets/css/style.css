@@ -62,7 +62,7 @@ a:hover, a:focus {
   overflow-x: hidden;
   position: fixed;
   top: 0;
-  right: 0;
+  right: -275px;
   font-size: 20px;
   transition: 0.3s;
 }
@@ -73,7 +73,7 @@ a:hover, a:focus {
 
 .navbar-toggle {
   color: #fff;
-  background-color: #544d47;
+  /*background-color: #544d47;*/
   text-transform: uppercase;
 }
 
@@ -87,7 +87,7 @@ a:hover, a:focus {
 }
 
 div.menu-wrapper.closed {
-  right: -275px;
+  right: 0;
 }
 
 /*div.menu-wrapper.closed .filters-wrapper, div.menu-wrapper.closed .search-wrapper {
@@ -163,7 +163,7 @@ div.menu-wrapper.closed {
   }
 
   div.menu-wrapper.closed {
-    right: -544px;
+    right: 0;
   }
 
   div#map.active {
