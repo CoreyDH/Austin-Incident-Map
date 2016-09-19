@@ -86,13 +86,9 @@ a:hover, a:focus {
   float:left;
 }
 
-div.menu-wrapper.closed {
+div.menu-wrapper.open {
   right: 0;
 }
-
-/*div.menu-wrapper.closed .filters-wrapper, div.menu-wrapper.closed .search-wrapper {
-  display: none;
-}*/
 
 .menu-wrapper i.fa {
   color: #3e3f3a;
@@ -107,36 +103,75 @@ div.menu-wrapper.closed {
   padding: 0 15px;;
 }
 
+/*Custom Panel*/
+.panel-custom, .panel-custom > .panel-heading {
+  border-radius: 0 !important;
+}
+
+.panel-custom, .panel-custom > .panel-collapse > .panel-body {
+  border: 0;
+  border-top: 0 !important;
+  background-color: #502e1e;
+}
+
+.panel-custom > .panel-collapse > .panel-body {
+  padding: 5px;
+}
+
+.panel-custom > .panel-heading {
+  background-color: #efefef;
+}
+
+.panel-custom > .panel-heading a {
+  color: #46403b;
+}
+
+.panel-custom > .panel-heading .glyphicon {
+  color: #cac0c0;
+  padding-top: 5px;
+}
+
 /* Filters */
 .menu .panel-body {
   padding: 0;
   background-color: #eae7e1;
 }
 
-.menu .panel-body li {
-  padding: 5px 20px;
+.filters-wrapper > li {
+  padding: 5px 8px;
 }
 
-.menu .panel-body li.selected {
+.filters-wrapper li.selected {
   color: #fff;
   background-color: rgba(0,0,0, 0.3);
 }
 
-.menu .panel-body li > label {
-  font-size: 14px;
+.filters-wrapper li > label {
+  font-size: 12px;
   text-transform: uppercase;
 }
 
-.menu .panel-body input[type="checkbox"] {
+.filters-wrapper input[type="checkbox"] {
 
 }
 
 /* Categories */
-#category-filters > li{
+#category-filters > li {
   cursor: pointer;
+  padding: 5px 20px;
 }
 
 /* Date */
+.date-filters-wrapper {
+  margin: 10px;
+  margin-bottom: 12px !important;
+
+}
+#date-filters > li {
+  padding: 7px 10px;
+  text-align: center;
+}
+
 #date-filters label {
   text-transform: uppercase;
   font-size: 11px;
@@ -147,8 +182,29 @@ div.menu-wrapper.closed {
   padding: 5px;
 }
 
-#search {
-  /*background-color: blue;*/
+/*Search*/
+.search-limit {
+  color: #fff;
+  font-size: 16px;
+  background-color: #a0654a;
+  padding: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.search-limit select {
+  margin: 0 10px;
+}
+.search-wrapper {
+  margin-bottom: 10px;
+}
+
+/*JQUERY ui*/
+.ui-datepicker-month {
+  color: #000;
+}
+
+div.ui-datepicker{
+ font-size:12px;
 }
 
 @media screen and (max-width: 544px) {
@@ -162,7 +218,11 @@ div.menu-wrapper.closed {
     width: 100%;
   }
 
-  div.menu-wrapper.closed {
+  div.menu-wrapper {
+    right: -544px;
+  }
+
+  div.menu-wrapper.open {
     right: 0;
   }
 

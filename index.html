@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/jquery-ui.min.css">
     <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/theme.css">
     <link rel="stylesheet" href="assets/vendor/components-font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/vendor/nanoscroller/nanoscroller.css">
 
     <!-- Main Style -->
     <link rel="stylesheet" href="assets/css/style.css">
@@ -22,10 +21,10 @@
 <body>
     <header>
         <nav class="navbar navbar-default">
-          <div class="navbar-header col-xs-8">
-              <a class="navbar-brand" href="#"><i class="fa fa-star"></i> Austin City Incident Map</a>
+          <div class="navbar-header col-xs-10 col-sm-8">
+              <a class="navbar-brand" href="#"><i class="fa fa-star hidden-xs"></i> Austin City Incident Map</a>
           </div>
-          <div class="col-xs-4 pull-right">
+          <div class="col-xs-2 col-sm-4 pull-right">
             <button type="button" class="navbar-toggle collapsed">
               <div class="menu-icon">
                 <span class="sr-only">Toggle navigation</span>
@@ -41,74 +40,91 @@
     </header>
     <div id="map"></div>
     <div class="menu-wrapper">
-      <ul class="menu">
-        <li>
-          <div class="menu-subtitle">
-            <a href="#" data-toggle="collapse" data-target="#keyword" data-parent="#menu">Search By Keyword</a>
+      <div class="menu panel-group" id="accordion" rol="tablist" aria-multiselectable="true">
+        <div class="search-limit">
+          <div class="form-inline">
+            Limit To
+            <select name="limit" id="limit" class="form-control">
+              <option value="100">100</option>
+              <option value="500" selected>500</option>
+              <option value="1000">1000</option>
+              <option value="5000">5000</option>
+              <option value="5000">10000</option>
+            </select>
           </div>
-          <div id="keyword" class="form-inline collapse in">
-            <div class="form-group">
-              <input type="text" class="form-control">
-              <a href="#" class="btn btn-danger">Search</a>
+        </div>
+        <div class="panel panel-default date-filters-wrapper">
+          <div class="panel-heading">Date Range</div>
+          <div class="panel-body">
+            <ul id="date-filters">
+              <li class="form-inline">
+                <div class="form-group">
+                  <label for="date-from">From</label>
+                  <input type="text" class="form-control" name="date-from" id="date-from">
+                </div>
+              </li>
+              <li class="form-inline">
+                <div class="form-group">
+                <label for="date-to">To</label>
+                <input type="text" class="form-control" name="date-to" id="date-to">
+              </div>
+            </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel panel-custom">
+          <div class="panel-heading" role="tab">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#keywordSearch" aria-expanded="true" aria-controls="keywordSearch">
+              Search By Keyword <span class="glyphicon glyphicon-minus pull-right"></span>
+            </a>
+          </div>
+          <div id="keywordSearch" class="panel-collapse collapse in">
+            <div class="panel-body">
+              <div class="form-group">
+                <input type="text" id="keyword" class="form-control" placeholder="Enter keyword here, ex. Assault">
+              </div>
+              <div class="search-wrapper text-center">
+                <a href="#" id="searchByKeyword" class="btn btn-warning search" date-search="keyword">Search</a>
+              </div>
             </div>
           </div>
-        </li>
-        <li>
-          <div class="panel panel-default filters-wrapper">
-            <div class="panel-heading">Filter By Category</div>
-            <div class="panel-body">
-              <ul id="category-filters">
-                <li><input type="checkbox" name="category" value="violent"> <label for="category">Violent</label></li>
-                <li><input type="checkbox" name="category" value="property"> <label for="category">Property Crime</label></li>
-                <li><input type="checkbox" name="category" value="accident"> <label for="category">Accident</label></li>
-                <li><input type="checkbox" name="category" value="drug"> <label for="category">Drug Related</label></li>
-                <li><input type="checkbox" name="category" value="drug"> <label for="category">Theft</label></li>
-              </ul>
-            </div>
+        </div>
+        <div class="panel panel-custom">
+          <div class="panel-heading" role="tab">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#filterSearch" aria-expanded="false" aria-controls="filterSearch">
+              Search By Category <span class="glyphicon glyphicon-plus pull-right"></span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="panel panel-default filters-wrapper">
-            <div class="panel-heading">Filter By Date</div>
+          <div id="filterSearch" class="form-inline panel-collapse collapse">
             <div class="panel-body">
-              <ul id="date-filters">
-                <li class="form-inline">
-                  <div class="form-group">
-                    <label for="date-from">From</label>
-                    <input type="text" class="form-control" name="date-from" id="date-from">
+              <ul class="filters-wrapper">
+                <li>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Categories</div>
+                    <div class="panel-body">
+                      <ul id="category-filters">
+                        <li><input type="checkbox" name="category" value="violent"> <label for="category">Violent</label></li>
+                        <li><input type="checkbox" name="category" value="property"> <label for="category">Property Crime</label></li>
+                        <li><input type="checkbox" name="category" value="accident"> <label for="category">Accident</label></li>
+                        <li><input type="checkbox" name="category" value="drug"> <label for="category">Drug Related</label></li>
+                        <li><input type="checkbox" name="category" value="drug"> <label for="category">Theft</label></li>
+                      </ul>
+                    </div>
                   </div>
                 </li>
                 <li>
-                  <div class="form-group">
-                  <label for="date-to">To</label>
-                  <input type="text" class="form-control" name="date-to" id="date-to">
-                </div>
-              </li>
+                  <div class="text-center search-wrapper">
+                    <a id="searchByFilters" class="btn btn-warning search" date-search="category">Search</a>
+                    <a id="reset" class="btn btn-primary">Reset</a>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
-        </li>
-        <li>
-          <div class="panel panel-default filters-wrapper">
-            <div class="panel-heading">Limit Search By</div>
-            <div class="panel-body">
-                <select name="limit" id="limit" class="form-control">
-                  <option value="100">100</option>
-                  <option value="250" selected>250</option>
-                  <option value="500">500</option>
-                  <option value="1000">1000</option>
-                  <option value="5000">5000</option>
-                </select>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="text-center search-wrapper">
-            <a id="search" class="btn btn-warning">Search</a>
-            <a id="clear" class="btn btn-primary">Clear</a>
-          </div>
-        </li>
-      </ul>
+        </div>
+
+      </div>
     </div>
 
     <!-- Vendor -->
@@ -116,7 +132,6 @@
     <script src="assets/vendor/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApfg7bCNXiH1vwNu-fDcZ6lQI6QGrV_0A&callback=initMap" async defer></script>
-    <script src="assets/vendor/nanoscroller/jquery.nanoscroller.min.js"></script>
 
     <!-- Scripts -->
     <script src="assets/js/data.js"></script>

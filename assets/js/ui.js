@@ -1,67 +1,175 @@
 (function($) {
   $(function() {
 
-    // $(".nano").nanoScroller();
+    var ui = {
+      initUI: function() {
+        this.loadDatepicker();
+        this.loadAnimations();
+      },
+      initListeners: function() {
 
-    function initListeners() {
-      $('.menu-title, .navbar-toggle').on('click', function(event) {
+        $('#reset').on('click', function() {
+          $('.selected').removeClass('selected').find('input[type="checkbox"]').prop('checked', false);
+        });
 
-        $('.menu-wrapper').toggleClass('closed');
+        $('.search').on('click', function() {
 
-      });
+          console.log($(this).attr('data-search'));
+          var searchObj = search.createObject($(this).attr('data-search'));
 
-      $('.menu-title').on('click', function(event) {
+          console.log(searchObj);
+        });
 
-        $('.menu-wrapper').toggleClass('closed');
-        $('#map').toggleClass('active');
+        var search = {
+          createObject: function(type) {
+            console.log(type);
+            this.limit = this.getLimit();
+            this.date = this.getDate();
 
-      });
+            if(type === 'category') {
+              this.categories = this.getCategories();
+            }
 
-      $('#category-filters > li').on('click', function(event) {
-        $(this).toggleClass('selected');
-        $(this).find('input[type="checkbox"]').attr('checked');
-        var checkbox = $(this).find('input[type="checkbox"]');
+            if(type === 'keyword') {
+              this.keyword = this.getKeyword();
+            }
 
-        if(!$(event.target).is('input')) {
-          checkbox.prop('checked', !checkbox.prop('checked'));
-        }
+            console.log(this.keyword, this.category);
+            return this.validate();
 
-      });
+          },
+          validate: function() {
 
-      var dateFormat = "mm/dd/yy",
-        from = $( "#date-from" )
-          .datepicker({
+            var obj = {};
+            var errors = [];
+
+            if(this.date) {
+              obj.date = this.date;
+            } else {
+              errors.push('Please enter a date range.');
+            }
+
+            if(this.categories) {
+              obj.categories = this.categories;
+            }
+
+            if(this.keyword) {
+              obj.keyword = this.keyword;
+            }
+
+            if(!$.isEmptyObject(obj)) {
+              obj.limit = this.limit;
+
+              if(obj.keyword || obj.categories) {
+                return obj;
+              } else {
+                errors.push('Please search by category or keyword.');
+              }
+            }
+
+            return errors;
+
+          },
+          getLimit: function() {
+            return parseInt($('#limit').val());
+          },
+          getDate: function() {
+            var fromDate = $('#date-from').val().trim() || false;
+            var toDate = $('#date-to').val().trim() || false;
+
+            if(fromDate && toDate) {
+              return {
+                from: fromDate,
+                to: toDate
+              };
+            } else {
+              return false;
+            }
+
+          },
+          getCategories: function() {
+            var categories = [];
+
+            $('.selected').each(function() {
+              categories.push($(this).find('input[type="checkbox"]').val());
+            });
+
+            return categories.length > 0 ? categories : false;
+          },
+          getKeyword: function() {
+            return $('#keyword').val().trim() || false;
+          }
+        };
+
+      },
+      loadDatepicker: function() {
+        var dateFormat = "mm/dd/yy",
+          from = $("#date-from")
+            .datepicker({
+              defaultDate: "+1w",
+              changeMonth: true,
+              numberOfMonths: 1,
+              maxDate: 0
+            })
+            .on( "change", function() {
+              to.datepicker("option", "minDate", getDate(this));
+            }),
+          to = $("#date-to").datepicker({
             defaultDate: "+1w",
             changeMonth: true,
             numberOfMonths: 1,
             maxDate: 0
           })
           .on( "change", function() {
-            to.datepicker( "option", "minDate", getDate( this ) );
-          }),
-        to = $( "#date-to" ).datepicker({
-          defaultDate: "+1w",
-          changeMonth: true,
-          numberOfMonths: 1,
-          maxDate: 0
-        })
-        .on( "change", function() {
-          from.datepicker( "option", "maxDate", getDate( this ) );
-        });
+            from.datepicker( "option", "maxDate", getDate(this));
+          });
 
-      function getDate( element ) {
-        var date;
-        try {
-          date = $.datepicker.parseDate( dateFormat, element.value );
-        } catch( error ) {
-          date = null;
+        function getDate(element) {
+          var date;
+          try {
+            date = $.datepicker.parseDate(dateFormat, element.value);
+          } catch( error ) {
+            date = null;
+          }
+
+          return date;
+        }
+      },
+    loadAnimations: function() {
+
+      // Menu slide
+      $('.navbar-toggle').on('click', function(event) {
+        $('.menu-wrapper').toggleClass('open');
+      });
+
+      // Checkbox
+      $('#category-filters > li').on('click', function(event) {
+
+        $this = $(this);
+        $this.toggleClass('selected');
+        $this.find('input[type="checkbox"]').attr('checked');
+
+        if(!$(event.target).is('input')) {
+          var $checkbox = $this.find('input[type="checkbox"]');
+          $checkbox.prop('checked', !$checkbox.prop('checked'));
         }
 
-        return date;
-      }
-    }
+      });
 
-    initListeners();
+      // Collapse Icons
+      $('.collapse')
+        .on('show.bs.collapse', function () {
+           $(this).parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        })
+        .on('hide.bs.collapse', function () {
+           $(this).parent().find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+        });
+    }
+  };
+
+  ui.initUI();
+  ui.initListeners();
+
 
   });
 })(jQuery);
