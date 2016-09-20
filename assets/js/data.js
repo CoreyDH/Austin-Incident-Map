@@ -1,5 +1,5 @@
 (function($) {
-  $(function() {
+  
   //
   // global variables and functions
   //
@@ -232,6 +232,8 @@ function getData(constraints) {
       };
     }
 
+    $(function() {
+
     initDatabase(function(flag) {
 
       console.log(flag);
@@ -330,4 +332,7 @@ function getData(constraints) {
     });
 
   });
+
+   return getData;
+
 })(jQuery);
