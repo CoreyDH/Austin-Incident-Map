@@ -71,12 +71,12 @@ function getData(constraints) {
   var actionable_constraints = $.extend( defaults, constraints );
 
 
-  // build a search list array
+  // build a array containing search keywords
 
-  if (constraints.keyword) {  // put the keyword into the search list array
+  if (constraints.keyword) {  // put a single keyword into the array
     search_list [0] = constraints.keyword;
   }
-  else {  // concatenate crime categories into the search list array
+  else {  // concatenate crime category keywords into the array
     for (i=0; i<constraints.categories.length; i++) {
       category = constraints.categories [ i ];   
       search_list = search_list.concat(getCrimeTypes(category));
@@ -84,19 +84,22 @@ function getData(constraints) {
   }
 
   // set the search constraints
-  //   - if the search contraints are a date range, pull all matching records in that date range.
-  //   - if not a date range, pull a limited number of records
+  //   - if date range: pull all matching records in that date range.
+  //   - if not date range: pull a limited number of records
   // the search starts at the last record in the array, the most recent incident.
 
 
-  // set parameters to not a date range
+  // default: not a date range; set search bounds to the index of 
+  // record 0 in the database and the last record in the database
   dateRangeFlag = false;
   startPoint = apdDataBase.length - 1;
   endPoint = 0;
   recordsLimit = apdDataBase.limit;
 
-  // set parameters to date range
-  if (constraints.dateRange.from) {
+  // on if: this is a date range search; call setSearchBounds to set  
+  // the search bounds to the index of the first record in the from date
+  // and the last record in the to date
+  if (constraints.hasOwnProperty('dateRange')) {
       bounds = setSearchBounds(constraints.dateRange); 
       dateRangeFlag = true;
       startPoint = bounds.startPoint;
@@ -121,39 +124,26 @@ function getData(constraints) {
       }
     } // for
 
-    
-        
+    // if it is a date range search and more records are returned than the
+    // user requested, then create an array with a even distribution of records
+    // by incident date
     if (dateRangeFlag && incidentArray.length > constraints.limit) {
-      debugger;
-      incidentArray = createAssortment(incidentArray, constraints.limit);
-    }
+      incidentArray = createDistribution(incidentArray, constraints.limit);
+    } 
     return incidentArray;
 
   } // function
 
 
-  function createAssortment (array, limits) {
+  function createDistribution (array, limits) {
     var intervals;
-    var remainder;
     var returnedArray = new Array ();
   
-
     intervals = Math.floor (array.length / limits);
-    remainder = array.length % limits;
 
     for (i = 0; i < limits; i++ ) {
       returnedArray.push(array[intervals * i]);
     }
-
-    debugger;
-
-    while (remainder) {
-      i--;
-      returnedArray.push(array[i]);
-      remainder--;
-    }
-
-    debugger;
 
     return(returnedArray);
 
@@ -219,8 +209,6 @@ function getData(constraints) {
     while (fromMoment == midPointMoment) {
       temp = (apdDataBase [midPoint].date).split ("T");
       midPointDate = temp [ 0 ];
-
-      console.log ( midPointDate = temp [ 0 ], " ", midPoint);
       midPointMoment = moment (midPointDate).unix();
       midPoint--;
     }
@@ -270,8 +258,6 @@ function getData(constraints) {
     while (toMoment == midPointMoment) {
       temp = (apdDataBase [midPoint].date).split ("T");
       midPointDate = temp [ 0 ];
-
-      console.log ( midPointDate = temp [ 0 ], " ", midPoint);
       midPointMoment = moment (midPointDate).unix();
       midPoint++;
     }
@@ -314,44 +300,93 @@ function getData(constraints) {
   //  TEST CASES
   //
 
-      // test categories search with date ranges
-
+  // Categories search with date ranges
       var mySearchResults = getData({
         categories: ['violent', 'property'],
         dateRange: {
           from: '07-14-2016',
           to: '07-17-2016'
          },
-          limit: 10
+          limit: 12
         }); 
-     
-
+      console.log (" ");
+      console.log (" ");
+      console.log ("violent/property, 7/14 to 7/17, 12 records");
+      for (i=0;i<mySearchResults.length;i++){
+      	  console.log (mySearchResults[i]);
+      }
         debugger;
 
 
-      // test keyword search
-
-      mySearchResults = getData({
-        keyword: ['DROP'],
+      // Categories search with date range of one day
+      var mySearchResults = getData({
+        categories: ['violent', 'property'],
         dateRange: {
           from: '06-14-2016',
-          to: '06-17-2016'
+          to: '06-14-2016'
          },
-          limit: 50
+          limit: 8
         }); 
+      console.log (" ");
+      console.log (" ");
+      console.log ("violent/property, 6/14 to 6/14, 8 records");
+      for (i=0;i<mySearchResults.length;i++){
+      	  console.log (mySearchResults[i]);
+      }
+        debugger;
+        
+        
+   // Keyword search with date ranges
+      var mySearchResults = getData({
+        keyword: 'PIGEON',
+        dateRange: {
+          from: '02-6-2016',
+          to: '08-1-2016'
+         },
+          limit: 20
+        }); 
+      console.log (" ");
+      console.log (" ");
+      console.log ("PIGEON keyword, 2/6 to 8/1, 20 records");
+      for (i=0;i<mySearchResults.length;i++){
+      	  console.log (mySearchResults[i]);
+      }
+        debugger;  
+        
+        
+    // Keyword search with date ranges, requesting 5 of a lot of records
+      var mySearchResults = getData({
+        keyword: 'ASSAULT',
+        dateRange: {
+          from: '07-1-2016',
+          to: '08-1-2016'
+         },
+          limit: 5
+        }); 
+      console.log (" ");
+      console.log (" ");
+      console.log ("ASSAULT keyword, 2/6 to 8/1, requesting 5 of a lot of records");
+      for (i=0;i<mySearchResults.length;i++){
+      	  console.log (mySearchResults[i]);
+      }
+        debugger;      
+        
+        
 
-      
- //     var mySearchResults = getDataByCategory ("drugs", 20); // search for first 20 crimes
-
- //     var i;
- //     console.log ("category search");
- //     for (i=0; i<mySearchResults.length;i++)
- //       console.log (mySearchResults[i]);
-
- //     var mySearchResults2 = getDataByKeyword ("PIGEON", 20); // search for type
- //       console.log (mySearchResults2[i]);
- //
- //     debugger;
+   // Categories search, no date range
+      var mySearchResults = getData({
+        categories: ['drugs', 'accident'],
+          limit: 40
+        }); 
+ 
+      console.log ( " ");
+      console.log (" " );
+      console.log ("drugs/accident, no date range, 40 records");
+      for (i=0;i<mySearchResults.length;i++){
+      	  console.log (mySearchResults[i]);
+      }
+        debugger;     
+        
     });
 
   });
