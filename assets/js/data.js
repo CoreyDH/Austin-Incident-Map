@@ -28,25 +28,6 @@
     }
 
 
-// {
-  // keyword: 'test',
-  // categories: ['violent', 'theft'],
-  // dateRange: {
-  //   from: '09/14/2016',
-  //   to: '09/17/2016'
-  // },
-  // limit: 10
-// }
-
-// assault on from range to range = 3000 / 100 = 30
-
-// for loop over 3000 records  every 30th return to array, send that data
-
-// 3000 / 100 = 30
-
-
-// 2734 / 250 = Math.floor()
-
 var defaults = {
   keyword: null,
   categories: ['violent', 'property', 'accident', 'theft'],
@@ -92,8 +73,8 @@ function getData(constraints) {
   // default: not a date range; set search bounds to the index of 
   // record 0 in the database and the last record in the database
   dateRangeFlag = false;
-  startPoint = apdDataBase.length - 1;
-  endPoint = 0;
+  endPoint = apdDataBase.length - 1;
+  startPoint = 0;
   recordsLimit = apdDataBase.limit;
 
   // on if: this is a date range search; call setSearchBounds to set  
@@ -102,12 +83,12 @@ function getData(constraints) {
   if (constraints.hasOwnProperty('dateRange')) {
       bounds = setSearchBounds(constraints.dateRange); 
       dateRangeFlag = true;
-      startPoint = bounds.startPoint;
-      endPoint = bounds.endPoint;
+      startPoint = bounds.fromPoint;
+      endPoint = bounds.toPoint;
       recordsLimit = apdDataBase.length;
   }
     
-  for(var i = startPoint; i >= endPoint; i--) {
+  for(var i = endPoint; i >= startPoint; i--) {
       var j = 0;
       while (j < search_list.length) {
         if(apdDataBase[i].crime_type.includes (search_list[j])) {           
@@ -117,12 +98,12 @@ function getData(constraints) {
         else {
           j++;
         } //else
-      } // while
+      } //while
 
       if(incidentArray.length === limit && !dateRangeFlag) {
         break;
       }
-    } // for
+    } //for
 
     // if it is a date range search and more records are returned than the
     // user requested, then create an array with a even distribution of records
@@ -152,8 +133,8 @@ function getData(constraints) {
 
   function setSearchBounds (constraint) {
 
-    var topIndex = apdDataBase.length - 1;
-    var bottomIndex = 0;
+    var topIndex;
+    var bottomIndex;
     var midPoint;
     var midPointDate;
     var midPointMoment;
@@ -162,26 +143,22 @@ function getData(constraints) {
     var currentIndexMoment;
     var temp;
 
-    boundsRecords = {startPoint: 0, endPoint: 1};
+    boundsRecords = {fromPoint: 0, toPoint: 1};
 
     var fromMoment = moment (constraint.from).unix();
     var toMoment = moment (constraint.to).unix();
 
-
-  
-    
     // from date range
-
-    // do a binary search to narrow within 100 records
-    while ( (topIndex - bottomIndex) > 100) {  
+    // do a binary search to locate a record with the from date
+    topIndex = apdDataBase.length - 1;
+    bottomIndex = 0;
+    midPointMoment = 0;
+    while (fromMoment != midPointMoment) {
       midPoint = Math.round(bottomIndex + (topIndex - bottomIndex) / 2);
       temp = (apdDataBase [midPoint].date).split ("T");
       midPointDate = temp [ 0 ];
       midPointMoment = moment (midPointDate).unix();
-      
-      if (fromMoment == midPointMoment) {
-        break;
-      }     
+         
       if (fromMoment < midPointMoment ) {
         topIndex = midPoint; 
       }
@@ -190,47 +167,27 @@ function getData(constraints) {
       }
     } 
 
-    counter = 0;
-    if (midPointMoment > fromMoment) {
-      counter = (-1);
-    } else if (midPointMoment < fromMoment) {
-      counter = (+1);
-    }
-
-    while ( fromMoment != midPointMoment) {
-      midPoint += counter;
-      temp = (apdDataBase [midPoint].date).split ("T");
-      midPointDate = temp [ 0 ];
-      midPointMoment = moment (midPointDate).unix();
-    }
-
-    // narrow down the first record in the from date range  
-
-    while (fromMoment == midPointMoment) {
-      temp = (apdDataBase [midPoint].date).split ("T");
-      midPointDate = temp [ 0 ];
-      midPointMoment = moment (midPointDate).unix();
+    // index down to the first record with the from date
+    while ( fromMoment == midPointMoment) {
       midPoint--;
+      temp = (apdDataBase [midPoint].date).split ("T");
+      midPointDate = temp [ 0 ];
+      midPointMoment = moment (midPointDate).unix();
     }
-      midPoint = midPoint + 2;
-
-      boundsRecords.endPoint = midPoint;
+    midPoint++;   
+    boundsRecords.fromPoint = midPoint;
    
-
-
-
     // to date range
-
-    // do a binary search to narrow within 100 records
-    while ( (topIndex - bottomIndex) > 100) {  
+    // do a binary search to locate a record with the to date
+    topIndex = apdDataBase.length - 1;
+    bottomIndex = midPoint;  // start with the fromPoint
+    midPointMoment = 0;
+    while (toMoment != midPointMoment) {
       midPoint = Math.round(bottomIndex + (topIndex - bottomIndex) / 2);
       temp = (apdDataBase [midPoint].date).split ("T");
       midPointDate = temp [ 0 ];
       midPointMoment = moment (midPointDate).unix();
-      
-      if (toMoment == midPointMoment) {
-        break;
-      }     
+         
       if (toMoment < midPointMoment ) {
         topIndex = midPoint; 
       }
@@ -239,34 +196,17 @@ function getData(constraints) {
       }
     } 
 
-    counter = 0;
-    if (midPointMoment > toMoment) {
-      counter = (-1);
-    } else if (midPointMoment < toMoment) {
-      counter = (+1);
-    }
-
-    while ( toMoment != midPointMoment) {
-      midPoint += counter;
-      temp = (apdDataBase [midPoint].date).split ("T");
-      midPointDate = temp [ 0 ];
-      midPointMoment = moment (midPointDate).unix();
-    }
-
-    // narrow down the last record in the from date range  
-
-    while (toMoment == midPointMoment) {
-      temp = (apdDataBase [midPoint].date).split ("T");
-      midPointDate = temp [ 0 ];
-      midPointMoment = moment (midPointDate).unix();
+ // index up to the last record with the to date
+    while ( toMoment == midPointMoment) {
       midPoint++;
+      temp = (apdDataBase [midPoint].date).split ("T");
+      midPointDate = temp [ 0 ];
+      midPointMoment = moment (midPointDate).unix();
     }
-      midPoint = midPoint - 2;
+    midPoint--;
+    boundsRecords.toPoint = midPoint;
 
-      boundsRecords.startPoint = midPoint;
-
-      return (boundsRecords);
-
+    return (boundsRecords);
   }
 
 
@@ -315,7 +255,7 @@ function getData(constraints) {
       for (i=0;i<mySearchResults.length;i++){
       	  console.log (mySearchResults[i]);
       }
-        debugger;
+  debugger;
 
 
       // Categories search with date range of one day
@@ -333,7 +273,7 @@ function getData(constraints) {
       for (i=0;i<mySearchResults.length;i++){
       	  console.log (mySearchResults[i]);
       }
-        debugger;
+ debugger;
         
         
    // Keyword search with date ranges
@@ -351,7 +291,7 @@ function getData(constraints) {
       for (i=0;i<mySearchResults.length;i++){
       	  console.log (mySearchResults[i]);
       }
-        debugger;  
+  debugger;  
         
         
     // Keyword search with date ranges, requesting 5 of a lot of records
@@ -365,11 +305,11 @@ function getData(constraints) {
         }); 
       console.log (" ");
       console.log (" ");
-      console.log ("ASSAULT keyword, 2/6 to 8/1, requesting 5 of a lot of records");
+      console.log ("ASSAULT keyword, 7/1 to 8/1, requesting 5 of a lot of records");
       for (i=0;i<mySearchResults.length;i++){
       	  console.log (mySearchResults[i]);
       }
-        debugger;      
+  debugger;      
         
         
 
@@ -385,7 +325,7 @@ function getData(constraints) {
       for (i=0;i<mySearchResults.length;i++){
       	  console.log (mySearchResults[i]);
       }
-        debugger;     
+  debugger;     
         
     });
 
