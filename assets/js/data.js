@@ -1,9 +1,19 @@
 var data = (function($) {
+
   
   //
   // global variables and functions
   //
   var apdDataBase;
+
+  var defaults = {
+  keyword: null,
+  categories: ['violent', 'property', 'accident', 'theft'],
+  dateRange : {
+    from: "01-01-16", 
+    to: "12-31-16"
+  }
+};
 
   //
   // Function: Read in nad init the apd database
@@ -17,6 +27,7 @@ var data = (function($) {
           }
       }).done(function(data) {
         apdDataBase = data;
+        findDateRange ();
 
         console.log('Success! Receive '+data.length+' records!');
 
@@ -26,16 +37,18 @@ var data = (function($) {
         callback(false);
       });
     }
+//
+// find the first and last dates in the apd data
+//
+function findDateRange () {
+    var dateRange = new Array ();
 
+    defaults.dateRange.from = apdDataBase [0].date.split ("T")[0];
+    defaults.dateRange.to = apdDataBase [apdDataBase.length - 1].date.split ("T")[0];
 
-var defaults = {
-  keyword: null,
-  categories: ['violent', 'property', 'accident', 'theft'],
-  dateRange : {
-    to: "12-31-16",
-    from: "01-010-16" 
+    return(defaults.dateRange);
   }
-};
+
 
  var getData = function(constraints) {
 
@@ -55,7 +68,7 @@ var defaults = {
   // build a array containing search keywords
 
   if (constraints.keyword) {  // put a single keyword into the array
-    search_list [0] = constraints.keyword;
+    search_list [0] = constraints.keyword.toUpperCase();
   }
   else {  // concatenate crime category keywords into the array
     for (i=0; i<constraints.categories.length; i++) {
@@ -115,7 +128,9 @@ var defaults = {
 
   } // function
 
-
+//
+// select a spread of incidents instead of simply sequential incidents
+//
   function createDistribution (array, limits) {
     var intervals;
     var returnedArray = new Array ();
@@ -130,7 +145,9 @@ var defaults = {
 
   }
 
-
+//
+// if the user has chosen a date range, find the first and last records in that date range
+//
   function setSearchBounds (constraint) {
 
     var topIndex;
@@ -232,97 +249,6 @@ var defaults = {
       };
     }
 
-
-  //
-  //  TEST CASES
-  //
-
-  // Categories search with date ranges
- //      var mySearchResults = getData({
- //        categories: ['violent', 'property'],
- //        dateRange: {
- //          from: '07-14-2016',
- //          to: '07-17-2016'
- //         },
- //          limit: 12
- //        }); 
- //      console.log (" ");
- //      console.log (" ");
- //      console.log ("violent/property, 7/14 to 7/17, 12 records");
- //      for (i=0;i<mySearchResults.length;i++){
- //      	  console.log (mySearchResults[i]);
- //      }
- //  debugger;
-
-
- //      // Categories search with date range of one day
- //      var mySearchResults = getData({
- //        categories: ['violent', 'property'],
- //        dateRange: {
- //          from: '06-14-2016',
- //          to: '06-14-2016'
- //         },
- //          limit: 8
- //        }); 
- //      console.log (" ");
- //      console.log (" ");
- //      console.log ("violent/property, 6/14 to 6/14, 8 records");
- //      for (i=0;i<mySearchResults.length;i++){
- //      	  console.log (mySearchResults[i]);
- //      }
- // debugger;
-        
-        
- //   // Keyword search with date ranges
- //      var mySearchResults = getData({
- //        keyword: 'PIGEON',
- //        dateRange: {
- //          from: '02-6-2016',
- //          to: '08-1-2016'
- //         },
- //          limit: 20
- //        }); 
- //      console.log (" ");
- //      console.log (" ");
- //      console.log ("PIGEON keyword, 2/6 to 8/1, 20 records");
- //      for (i=0;i<mySearchResults.length;i++){
- //      	  console.log (mySearchResults[i]);
- //      }
- //  debugger;  
-        
-        
- //    // Keyword search with date ranges, requesting 5 of a lot of records
- //      var mySearchResults = getData({
- //        keyword: 'ASSAULT',
- //        dateRange: {
- //          from: '07-1-2016',
- //          to: '08-1-2016'
- //         },
- //          limit: 5
- //        }); 
- //      console.log (" ");
- //      console.log (" ");
- //      console.log ("ASSAULT keyword, 7/1 to 8/1, requesting 5 of a lot of records");
- //      for (i=0;i<mySearchResults.length;i++){
- //      	  console.log (mySearchResults[i]);
- //      }
- //  debugger;      
-        
-        
-
- //   // Categories search, no date range
- //      var mySearchResults = getData({
- //        categories: ['drugs', 'accident'],
- //          limit: 40
- //        }); 
- 
- //      console.log ( " ");
- //      console.log (" " );
- //      console.log ("drugs/accident, no date range, 40 records");
- //      for (i=0;i<mySearchResults.length;i++){
- //      	  console.log (mySearchResults[i]);
- //      }
- //  debugger;     
 
    return {
       init: initDatabase,
