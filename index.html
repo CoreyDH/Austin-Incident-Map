@@ -85,7 +85,7 @@
                 <input type="text" id="keyword" class="form-control" placeholder="Enter keyword here, ex. Assault">
               </div>
               <div class="search-wrapper text-center">
-                <a href="#" id="searchByKeyword" class="btn btn-warning search" date-search="keyword">Search</a>
+                <a href="#" id="searchByKeyword" class="btn btn-warning search" data-search="keyword">Search</a>
               </div>
             </div>
           </div>
@@ -107,15 +107,15 @@
                         <li><input type="checkbox" name="category" value="violent"> <label for="category">Violent</label></li>
                         <li><input type="checkbox" name="category" value="property"> <label for="category">Property Crime</label></li>
                         <li><input type="checkbox" name="category" value="accident"> <label for="category">Accident</label></li>
-                        <li><input type="checkbox" name="category" value="drug"> <label for="category">Drug Related</label></li>
-                        <li><input type="checkbox" name="category" value="drug"> <label for="category">Theft</label></li>
+                        <li><input type="checkbox" name="category" value="drugs"> <label for="category">Drug Related</label></li>
+                        <li><input type="checkbox" name="category" value="theft"> <label for="category">Theft</label></li>
                       </ul>
                     </div>
                   </div>
                 </li>
                 <li>
                   <div class="text-center search-wrapper">
-                    <a id="searchByFilters" class="btn btn-warning search" date-search="category">Search</a>
+                    <a id="searchByFilters" class="btn btn-warning search" data-search="category">Search</a>
                     <a id="reset" class="btn btn-primary">Reset</a>
                   </div>
                 </li>
@@ -131,6 +131,7 @@
     <script src="assets/vendor/jquery/jquery-3.1.0.min.js"></script>
     <script src="assets/vendor/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/vendor/moment/moment.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApfg7bCNXiH1vwNu-fDcZ6lQI6QGrV_0A&callback=initMap" async defer></script>
 
     <!-- Scripts -->

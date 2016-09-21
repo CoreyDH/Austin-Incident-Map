@@ -1,4 +1,4 @@
-(function($) {
+(function($, data) {
   $(function() {
 
     var ui = {
@@ -14,15 +14,19 @@
 
         $('.search').on('click', function() {
 
-          console.log($(this).attr('data-search'));
           var searchObj = search.createObject($(this).attr('data-search'));
 
           console.log(searchObj);
+          if(typeof searchObj === 'object') {
+            console.log(data.getData(searchObj));
+          }
+
+
         });
 
         var search = {
           createObject: function(type) {
-            console.log(type);
+
             this.limit = this.getLimit();
             this.date = this.getDate();
 
@@ -34,7 +38,6 @@
               this.keyword = this.getKeyword();
             }
 
-            console.log(this.keyword, this.category);
             return this.validate();
 
           },
@@ -103,7 +106,7 @@
 
       },
       loadDatepicker: function() {
-        var dateFormat = "mm/dd/yy",
+        var dateFormat = "yy-mm-dd",
           from = $("#date-from")
             .datepicker({
               defaultDate: "+1w",
@@ -167,9 +170,28 @@
     }
   };
 
+
+  data.init(function(flag) {
+    console.log(flag);
+    if(flag) {
+
+           var mySearchResults = data.getData({
+             categories: ['violent', 'property'],
+             dateRange: {
+               from: '07-14-2016',
+               to: '07-17-2016'
+              },
+               limit: 12
+             });
+           console.log(mySearchResults);
+
+      ui.initListeners();
+    }
+  });
+
   ui.initUI();
-  ui.initListeners();
+
 
 
   });
-})(jQuery);
+})(jQuery, data);
