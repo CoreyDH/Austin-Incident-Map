@@ -27,11 +27,10 @@ var data = (function($) {
           }
       }).done(function(data) {
         apdDataBase = data;
-        findDateRange ();
-
+   
         console.log('Success! Receive '+data.length+' records!');
 
-        callback(true);
+        callback(findDateRange());
       }).fail(function() {
 
         callback(false);
