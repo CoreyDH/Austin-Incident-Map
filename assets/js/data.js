@@ -1,6 +1,5 @@
 var data = (function($) {
 
-  
   //
   // global variables and functions
   //
@@ -16,7 +15,7 @@ var data = (function($) {
 };
 
   //
-  // Function: Read in nad init the apd database
+  // Function: Read in and init the apd database
   //
     function initDatabase(callback) {
      $.ajax({
@@ -27,7 +26,7 @@ var data = (function($) {
           }
       }).done(function(data) {
         apdDataBase = data;
-   
+  
         console.log('Success! Receive '+data.length+' records!');
 
         callback(findDateRange());
@@ -37,7 +36,7 @@ var data = (function($) {
       });
     }
 //
-// find the first and last dates in the apd data
+// find the first and last dates in the apd data, store them, and return them
 //
 function findDateRange () {
     var dateRange = new Array ();
@@ -45,9 +44,15 @@ function findDateRange () {
     defaults.dateRange.from = apdDataBase [0].date.split ("T")[0];
     defaults.dateRange.to = apdDataBase [apdDataBase.length - 1].date.split ("T")[0];
 
+    defaults.dateRange.from = moment(defaults.dateRange.from, 'YYYY-MM-DD').format('MM/DD/YYYY');
+ //   defaults.dateRange.from = "01/01/2016";
+    defaults.dateRange.to = moment(defaults.dateRange.to, 'YYYY-MM-DD').format('MM/DD/YYYY');
     return(defaults.dateRange);
   }
 
+//
+// getData:  the main routine called by the app
+//
 
  var getData = function(constraints) {
 
@@ -62,7 +67,6 @@ function findDateRange () {
       
   var limit = constraints.limit || dbLength;
   var actionable_constraints = $.extend( defaults, constraints );
-
 
   // build a array containing search keywords
 
@@ -100,6 +104,7 @@ function findDateRange () {
       recordsLimit = apdDataBase.length;
   }
     
+
   for(var i = endPoint; i >= startPoint; i--) {
       var j = 0;
       while (j < search_list.length) {
@@ -128,7 +133,8 @@ function findDateRange () {
   } // function
 
 //
-// select a spread of incidents instead of simply sequential incidents
+// create a distribution of the incidents by date.  per the algorithm, 
+// push records to an array to return (returnedArray)
 //
   function createDistribution (array, limits) {
     var intervals;
@@ -139,7 +145,6 @@ function findDateRange () {
     for (i = 0; i < limits; i++ ) {
       returnedArray.push(array[intervals * i]);
     }
-
     return(returnedArray);
 
   }
@@ -160,7 +165,6 @@ function findDateRange () {
     var temp;
 
     boundsRecords = {fromPoint: 0, toPoint: 1};
-
     var fromMoment = moment (constraint.from).unix();
     var toMoment = moment (constraint.to).unix();
 
@@ -183,7 +187,8 @@ function findDateRange () {
       }
     } 
 
-    // index down to the first record with the from date
+    // midpoint currently points to a record with the from date; 
+    // index to the first record with the from date
     while ( fromMoment == midPointMoment) {
       midPoint--;
       temp = (apdDataBase [midPoint].date).split ("T");
@@ -212,7 +217,8 @@ function findDateRange () {
       }
     } 
 
- // index up to the last record with the to date
+    // midpoint currently points to a record with the to date; 
+    // index to the last record with the to date
     while ( toMoment == midPointMoment) {
       midPoint++;
       temp = (apdDataBase [midPoint].date).split ("T");
@@ -221,7 +227,6 @@ function findDateRange () {
     }
     midPoint--;
     boundsRecords.toPoint = midPoint;
-
     return (boundsRecords);
   }
 
@@ -241,8 +246,8 @@ function findDateRange () {
     function getCategoryList() {
       return {
         violent: ["ASSAULT", "ASLT", "FORCED SODOMY", "KIDNAPPING", "RAPE", "MANSLAUGHTER", "MURDER"],
-        property: ["BURGLARY", "BURG", "ROBBERY"],
-        theft: ["THEFT"],
+        property: ["BURGLARY", "BURG", "MISCHIEF"],
+        theft: ["THEFT", "ROBBERY"],
         accident: ["CRASH"],
         drugs: ["DRUG", "CONTROLLED", "MARIJUANA"]
       };
