@@ -17,6 +17,7 @@
 
           console.log(searchObj);
           if(typeof searchObj === 'object') {
+            plotMarkers(data.getData(searchObj));
             console.log(data.getData(searchObj));
           }
 

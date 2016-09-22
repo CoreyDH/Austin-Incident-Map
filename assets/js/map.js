@@ -3,16 +3,6 @@ var markers=[];
 var geocode;
 var map;
 var mapArray={
-plotDataByKeyword: function(keyword, limit){
-  var arrayToPlot=getDataByKeyword(keyword, limit);
-  map.plotMarkers(arrayToPlot);
-},
-
-plotDataByCategory: function(category, limit){
-  var arrayToPlot=getDataByCategory(category, limit);
-  plotMarkers(arrayToPlot);
-},
-
 selectIcon: function(category){
   var icon;
   if (category=="violent"){
@@ -35,7 +25,6 @@ convertTime: function(time){
     hours=0+time.charAt(0).toString();
     minutes=time.substring(1,3).toString();
     military=hours+minutes;
-    console.log(military);
   } else if(time.length==4){
     hours=time.substring(0,2).toString();
     minutes=time.substring(2,4).toString();
@@ -103,12 +92,8 @@ function initMap() {
     map.setZoom(11);
     }
   });
-  var marker= new google.maps.Marker({
-    map: map,
-    position: {lat: 30.29001, lng: -97.666},
-    });
-  markers.push(marker);
-  console.log(markers);
+
+};
 
 function setMapOnAll(map) {
   for (var i = 0; i < markers.length; i++) {
@@ -123,8 +108,6 @@ function clearMarkers() {
 function deleteMarkers(){
   clearMarkers();
   markers=[];
-};
-  
 };
 
 function createMarkers(geocoder, resultsMap, incidentAddress, incidentWindow, category){
@@ -144,25 +127,20 @@ function createMarkers(geocoder, resultsMap, incidentAddress, incidentWindow, ca
           markers.push(marker);
           };
         });
+  console.log(markers);
 };
 
 function plotMarkers(arrayToPlot){
-  var incidentWindow = new google.maps.InfoWindow({
-        content: contentString
-    });
-    console.log(arrayToPlot.incidents.length);
-    console.log(object.incidents.length);
-    for(i=0; i<arrayToPlot.incidents.length; i++){
-      console.log(i);
-      key=arrayToPlot.incidents;
-      console.log(key);
-      console.log(key[i].time)
+    console.log(arrayToPlot.length);
+    for(i=0; i<arrayToPlot.length; i++){
+      var key=arrayToPlot;
+      key[i].address = key[i].address.replace("BLOCK ", "");
+      console.log(key[i].address);
       var time = mapArray.convertTime(key[i].time);
       var contentString=mapArray.createContentString(key[i], time);
       var incidentWindow = new google.maps.InfoWindow({
         content: contentString
       });
-      console.log(contentString);
       createMarkers(geocode, map, key[i].address, incidentWindow, key[i].crime_type);
     }
   };
