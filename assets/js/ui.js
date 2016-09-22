@@ -106,8 +106,6 @@
       },
       loadDatepicker: function(dateRange) {
 
-        dateRange.from = moment(dateRange.from, 'YYYY-MM-DD').format('MM/DD/YYYY');
-        dateRange.to = moment(dateRange.to, 'YYYY-MM-DD').format('MM/DD/YYYY');
         $('#date-from').val(dateRange.from);
         $('#date-to').val(dateRange.to);
 
