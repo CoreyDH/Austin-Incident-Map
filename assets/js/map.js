@@ -1,5 +1,6 @@
 //global variables
 var markers=[];
+var infoWindows=[];
 var geocode;
 var map;
 var mapArray={
@@ -96,10 +97,8 @@ function initMap() {
 };
 
 function setMapOnAll(map) {
-  console.log(markers.length);
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
-    console.log(markers[i]);
   }
 };
 
@@ -115,8 +114,8 @@ function deleteMarkers(){
 function createMarkers(incidentAddress, incidentWindow, category){
   var address = incidentAddress+", Austin, TX";
   var image=mapArray.selectIcon(category);
+  infoWindows.push(incidentWindow);
   geocode.geocode({'address': address}, function(results, status) {
-      console.log(results, status);
       if(status === 'OVER_QUERY_LIMIT') {
           setTimeout(function() {
             createMarkers(incidentAddress, incidentWindow, category);
@@ -129,6 +128,9 @@ function createMarkers(incidentAddress, incidentWindow, category){
               position: results[0].geometry.location
             });
           marker.addListener('click', function(){
+            for (var i = 0; i<infoWindows.length; i++) {
+              infoWindows[i].close();
+            }
             incidentWindow.open(map, marker);
           })
           markers.push(marker);
