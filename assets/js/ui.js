@@ -3,7 +3,6 @@
 
     var ui = {
       initUI: function() {
-        this.loadDatepicker();
         this.loadAnimations();
       },
       initListeners: function() {
@@ -105,23 +104,29 @@
         };
 
       },
-      loadDatepicker: function() {
-        var dateFormat = "yy-mm-dd",
+      loadDatepicker: function(dateRange) {
+
+        dateRange.from = moment(dateRange.from, 'YYYY-MM-DD').format('MM/DD/YYYY');
+        dateRange.to = moment(dateRange.to, 'YYYY-MM-DD').format('MM/DD/YYYY');
+        $('#date-from').val(dateRange.from);
+        $('#date-to').val(dateRange.to);
+
+        var dateFormat = "mm/dd/yy",
           from = $("#date-from")
             .datepicker({
-              defaultDate: "+1w",
+              defaultDate: dateRange.from,
               changeMonth: true,
               numberOfMonths: 1,
-              maxDate: 0
+              minDate: dateRange.from
             })
             .on( "change", function() {
               to.datepicker("option", "minDate", getDate(this));
             }),
           to = $("#date-to").datepicker({
-            defaultDate: "+1w",
+            defaultDate: dateRange.to,
             changeMonth: true,
             numberOfMonths: 1,
-            maxDate: 0
+            maxDate: dateRange.to
           })
           .on( "change", function() {
             from.datepicker( "option", "maxDate", getDate(this));
@@ -171,27 +176,15 @@
   };
 
 
-  data.init(function(flag) {
-    console.log(flag);
-    if(flag) {
-
-           var mySearchResults = data.getData({
-             categories: ['violent', 'property'],
-             dateRange: {
-               from: '07-14-2016',
-               to: '07-17-2016'
-              },
-               limit: 12
-             });
-           console.log(mySearchResults);
-
+  data.init(function(dateRange) {
+    console.log(dateRange);
+    if(dateRange) {
+      ui.loadDatepicker(dateRange);
       ui.initListeners();
     }
   });
 
   ui.initUI();
-
-
 
   });
 })(jQuery, data);

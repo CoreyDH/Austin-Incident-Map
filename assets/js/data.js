@@ -1,9 +1,4 @@
 var data = (function($) {
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 9f632d287ff25dbbba4221a9386e0210944871b0
   //
   // global variables and functions
   //
@@ -30,11 +25,10 @@ var data = (function($) {
           }
       }).done(function(data) {
         apdDataBase = data;
-        findDateRange ();
 
         console.log('Success! Receive '+data.length+' records!');
 
-        callback(true);
+        callback(findDateRange ());
       }).fail(function() {
 
         callback(false);
@@ -49,16 +43,7 @@ function findDateRange () {
     defaults.dateRange.from = apdDataBase [0].date.split ("T")[0];
     defaults.dateRange.to = apdDataBase [apdDataBase.length - 1].date.split ("T")[0];
 
-<<<<<<< HEAD
-var defaults = {
-  keyword: null,
-  categories: ['violent', 'property', 'accident', 'theft'],
-  dateRange : {
-    to: "12-31-16",
-    from: "01-010-16"
-=======
     return(defaults.dateRange);
->>>>>>> 9f632d287ff25dbbba4221a9386e0210944871b0
   }
 
 
