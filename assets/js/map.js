@@ -5,15 +5,15 @@ var map;
 var mapArray={
 selectIcon: function(category){
   var icon;
-  if (category=="violent"){
+  if (category.includes('ASSAULT')){
     icon="assets/images/robbery.png";
-  } else if (category=="property"){
+  } else if (category.includes('PROPERTY')){
     icon="assets/images/house.png";
-  } else if(category=="thieft"){
+  } else if(category.includes('THIEFT')){
     icon="assets/images/theft.png";
-  } else if (category=="accident"){
+  } else if (category.includes('ACCIDENT')){
     icon="assets/images/caraccident.png";
-  } else if(category=="drug"){
+  } else if(category.includes('DRUG')){
     icon="assets/images/marijuana.png";
   }
     return icon;
@@ -43,7 +43,7 @@ convertTime: function(time){
 },
 
 createContentString: function(incident, time){
-  var info= '<div id="content">'+'<div id="bodyContent">'+'<p><b>Incident: </b>'+incident.crime_type+'</p>'+'<p><b>Address: </b>'+incident.address+'</p>'+'<p><b>Date: </b>'+incident.date+'</p>'+
+  var info= '<div id="content">'+'<div id="bodyContent">'+'<p><b>Incident: </b>'+incident.crime_type+'</p>'+'<p><b>Address: </b>'+incident.address+'</p>'+'<p><b>Date: </b>'+incident.date.split("T")[0]+'</p>'+
   '<p><b>Report Number: </b>'+incident.incident_report_number+'</p>'+'<p><b>Time: </b>'+time+'</p>'+'</div>'+'</div>';
   return info
   }
@@ -96,8 +96,10 @@ function initMap() {
 };
 
 function setMapOnAll(map) {
+  console.log(markers.length);
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
+    console.log(markers[i]);
   }
 };
 
@@ -110,14 +112,19 @@ function deleteMarkers(){
   markers=[];
 };
 
-function createMarkers(geocoder, resultsMap, incidentAddress, incidentWindow, category){
+function createMarkers(incidentAddress, incidentWindow, category){
   var address = incidentAddress+", Austin, TX";
   var image=mapArray.selectIcon(category);
-  geocoder.geocode({'address': address}, function(results, status) {
+  geocode.geocode({'address': address}, function(results, status) {
+      console.log(results, status);
+      if(status === 'OVER_QUERY_LIMIT') {
+          setTimeout(function() {
+            createMarkers(incidentAddress, incidentWindow, category);
+          }, 100);
+      }
       if (status === 'OK') {
-            resultsMap.setCenter(results[0].geometry.location);
             var marker= new google.maps.Marker({
-              map: resultsMap,
+              map: map,
               icon: image,
               position: results[0].geometry.location
             });
@@ -127,20 +134,18 @@ function createMarkers(geocoder, resultsMap, incidentAddress, incidentWindow, ca
           markers.push(marker);
           };
         });
-  console.log(markers);
 };
 
 function plotMarkers(arrayToPlot){
-    console.log(arrayToPlot.length);
+    deleteMarkers();
     for(i=0; i<arrayToPlot.length; i++){
       var key=arrayToPlot;
       key[i].address = key[i].address.replace("BLOCK ", "");
-      console.log(key[i].address);
       var time = mapArray.convertTime(key[i].time);
       var contentString=mapArray.createContentString(key[i], time);
       var incidentWindow = new google.maps.InfoWindow({
         content: contentString
       });
-      createMarkers(geocode, map, key[i].address, incidentWindow, key[i].crime_type);
+      createMarkers(key[i].address, incidentWindow, key[i].crime_type);
     }
   };
