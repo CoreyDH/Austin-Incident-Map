@@ -6,43 +6,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Austin Incident Map</title>
+
+    <!-- Vendor -->
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/jquery-ui.min.css">
+    <link rel="stylesheet" href="assets/vendor/jquery-ui/themes/humanity/theme.css">
     <link rel="stylesheet" href="assets/vendor/components-font-awesome/css/font-awesome.min.css">
+
+    <!-- Main Style -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
     <header>
         <nav class="navbar navbar-default">
-          <div class="navbar-header">
-              <a class="navbar-brand" href="#">Austin City Incident Map</a>
+          <div class="navbar-header col-xs-10 col-sm-8">
+              <a class="navbar-brand" href="#"><i class="fa fa-star hidden-xs"></i> Austin City Incident Map</a>
           </div>
+          <div class="col-xs-2 col-sm-4 pull-right">
+            <button type="button" class="navbar-toggle collapsed">
+              <div class="menu-icon">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </div>
+              <span class="hidden-xs">Menu</span>
+            </button>
+          </div>
+
         </nav>
     </header>
     <div id="map"></div>
     <div class="menu-wrapper">
-      <ul class="menu">
-        <li class="menu-title"><a href="#" class="menu-toggle"><i class="fa fa-bars"></i> Menu</a></li>
-        <li>
-          <div id="category-filters" class="panel panel-default">
-            <div class="panel-heading">Filter By Category</div>
+      <div class="menu panel-group" id="accordion" rol="tablist" aria-multiselectable="true">
+        <div class="search-limit">
+          <div class="form-inline">
+            Limit To
+            <select name="limit" id="limit" class="form-control">
+              <option value="100">100</option>
+              <option value="500" selected>500</option>
+              <option value="1000">1000</option>
+              <option value="5000">5000</option>
+              <option value="5000">10000</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel panel-default date-filters-wrapper">
+          <div class="panel-heading">Date Range</div>
+          <div class="panel-body">
+            <ul id="date-filters">
+              <li class="form-inline">
+                <div class="form-group">
+                  <label for="date-from">From</label>
+                  <input type="text" class="form-control" name="date-from" id="date-from">
+                </div>
+              </li>
+              <li class="form-inline">
+                <div class="form-group">
+                <label for="date-to">To</label>
+                <input type="text" class="form-control" name="date-to" id="date-to">
+              </div>
+            </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel panel-custom">
+          <div class="panel-heading" role="tab">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#keywordSearch" aria-expanded="true" aria-controls="keywordSearch">
+              Search By Keyword <span class="glyphicon glyphicon-minus pull-right"></span>
+            </a>
+          </div>
+          <div id="keywordSearch" class="panel-collapse collapse in">
             <div class="panel-body">
-              <ul>
-                <li><input type="checkbox" name="category" value="violent"> <label for="category">Violent</label></li>
-                <li><input type="checkbox" name="category" value="property"> <label for="category">Property Crime</label></li>
-                <li><input type="checkbox" name="category" value="accident"> <label for="category">Accident</label></li>
-                <li><input type="checkbox" name="category" value="drug"> <label for="category">Drug Related</label></li>
+              <div class="form-group">
+                <input type="text" id="keyword" class="form-control" placeholder="Enter keyword here, ex. Assault">
+              </div>
+              <div class="search-wrapper text-center">
+                <a href="#" id="searchByKeyword" class="btn btn-warning search" data-search="keyword">Search</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-custom">
+          <div class="panel-heading" role="tab">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#filterSearch" aria-expanded="false" aria-controls="filterSearch">
+              Search By Category <span class="glyphicon glyphicon-plus pull-right"></span>
+            </a>
+          </div>
+          <div id="filterSearch" class="form-inline panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="filters-wrapper">
+                <li>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Categories</div>
+                    <div class="panel-body">
+                      <ul id="category-filters">
+                        <li><input type="checkbox" name="category" value="violent"> <label for="category">Violent</label></li>
+                        <li><input type="checkbox" name="category" value="property"> <label for="category">Property Crime</label></li>
+                        <li><input type="checkbox" name="category" value="accident"> <label for="category">Accident</label></li>
+                        <li><input type="checkbox" name="category" value="drugs"> <label for="category">Drug Related</label></li>
+                        <li><input type="checkbox" name="category" value="theft"> <label for="category">Theft</label></li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="text-center search-wrapper">
+                    <a id="searchByFilters" class="btn btn-warning search" data-search="category">Search</a>
+                    <a id="reset" class="btn btn-primary">Reset</a>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
-        </li>
-      </ul>
+        </div>
+
+      </div>
     </div>
 
     <!-- Vendor -->
     <script src="assets/vendor/jquery/jquery-3.1.0.min.js"></script>
+    <script src="assets/vendor/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/vendor/moment/moment.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApfg7bCNXiH1vwNu-fDcZ6lQI6QGrV_0A&callback=initMap" async defer></script>
 
     <!-- Scripts -->
