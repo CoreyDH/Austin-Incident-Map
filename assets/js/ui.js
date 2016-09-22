@@ -1,9 +1,8 @@
-(function($) {
+(function($, data) {
   $(function() {
 
     var ui = {
       initUI: function() {
-        this.loadDatepicker();
         this.loadAnimations();
       },
       initListeners: function() {
@@ -14,15 +13,19 @@
 
         $('.search').on('click', function() {
 
-          console.log($(this).attr('data-search'));
           var searchObj = search.createObject($(this).attr('data-search'));
 
           console.log(searchObj);
+          if(typeof searchObj === 'object') {
+            console.log(data.getData(searchObj));
+          }
+
+
         });
 
         var search = {
           createObject: function(type) {
-            console.log(type);
+
             this.limit = this.getLimit();
             this.date = this.getDate();
 
@@ -34,7 +37,6 @@
               this.keyword = this.getKeyword();
             }
 
-            console.log(this.keyword, this.category);
             return this.validate();
 
           },
@@ -102,23 +104,29 @@
         };
 
       },
-      loadDatepicker: function() {
+      loadDatepicker: function(dateRange) {
+
+        dateRange.from = moment(dateRange.from, 'YYYY-MM-DD').format('MM/DD/YYYY');
+        dateRange.to = moment(dateRange.to, 'YYYY-MM-DD').format('MM/DD/YYYY');
+        $('#date-from').val(dateRange.from);
+        $('#date-to').val(dateRange.to);
+
         var dateFormat = "mm/dd/yy",
           from = $("#date-from")
             .datepicker({
-              defaultDate: "+1w",
+              defaultDate: dateRange.from,
               changeMonth: true,
               numberOfMonths: 1,
-              maxDate: 0
+              minDate: dateRange.from
             })
             .on( "change", function() {
               to.datepicker("option", "minDate", getDate(this));
             }),
           to = $("#date-to").datepicker({
-            defaultDate: "+1w",
+            defaultDate: dateRange.to,
             changeMonth: true,
             numberOfMonths: 1,
-            maxDate: 0
+            maxDate: dateRange.to
           })
           .on( "change", function() {
             from.datepicker( "option", "maxDate", getDate(this));
@@ -167,9 +175,16 @@
     }
   };
 
-  ui.initUI();
-  ui.initListeners();
 
+  data.init(function(dateRange) {
+    console.log(dateRange);
+    if(dateRange) {
+      ui.loadDatepicker(dateRange);
+      ui.initListeners();
+    }
+  });
+
+  ui.initUI();
 
   });
-})(jQuery);
+})(jQuery, data);

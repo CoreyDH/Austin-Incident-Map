@@ -1,5 +1,4 @@
 var data = (function($) {
-
   //
   // global variables and functions
   //
@@ -9,7 +8,7 @@ var data = (function($) {
   keyword: null,
   categories: ['violent', 'property', 'accident', 'theft'],
   dateRange : {
-    from: "01-01-16", 
+    from: "01-01-16",
     to: "12-31-16"
   }
 };
@@ -26,10 +25,10 @@ var data = (function($) {
           }
       }).done(function(data) {
         apdDataBase = data;
-  
+
         console.log('Success! Receive '+data.length+' records!');
 
-        callback(findDateRange());
+        callback(findDateRange ());
       }).fail(function() {
 
         callback(false);
@@ -64,7 +63,7 @@ function findDateRange () {
   var endPoint;
   var recordsLimit;
   var bounds;
-      
+
   var limit = constraints.limit || dbLength;
   var actionable_constraints = $.extend( defaults, constraints );
 
@@ -75,7 +74,7 @@ function findDateRange () {
   }
   else {  // concatenate crime category keywords into the array
     for (i=0; i<constraints.categories.length; i++) {
-      category = constraints.categories [ i ];   
+      category = constraints.categories [ i ];
       search_list = search_list.concat(getCrimeTypes(category));
     }
   }
@@ -86,32 +85,31 @@ function findDateRange () {
   // the search starts at the last record in the array, the most recent incident.
 
 
-  // default: not a date range; set search bounds to the index of 
+  // default: not a date range; set search bounds to the index of
   // record 0 in the database and the last record in the database
   dateRangeFlag = false;
   endPoint = apdDataBase.length - 1;
   startPoint = 0;
   recordsLimit = apdDataBase.limit;
 
-  // on if: this is a date range search; call setSearchBounds to set  
+  // on if: this is a date range search; call setSearchBounds to set
   // the search bounds to the index of the first record in the from date
   // and the last record in the to date
   if (constraints.hasOwnProperty('dateRange')) {
-      bounds = setSearchBounds(constraints.dateRange); 
+      bounds = setSearchBounds(constraints.dateRange);
       dateRangeFlag = true;
       startPoint = bounds.fromPoint;
       endPoint = bounds.toPoint;
       recordsLimit = apdDataBase.length;
   }
-    
 
   for(var i = endPoint; i >= startPoint; i--) {
       var j = 0;
       while (j < search_list.length) {
-        if(apdDataBase[i].crime_type.includes (search_list[j])) {           
+        if(apdDataBase[i].crime_type.includes (search_list[j])) {
           incidentArray.push(apdDataBase[i]);
-          j = search_list.length; 
-        }         
+          j = search_list.length;
+        }
         else {
           j++;
         } //else
@@ -127,19 +125,19 @@ function findDateRange () {
     // by incident date
     if (dateRangeFlag && incidentArray.length > constraints.limit) {
       incidentArray = createDistribution(incidentArray, constraints.limit);
-    } 
+    }
     return incidentArray;
 
   } // function
 
 //
-// create a distribution of the incidents by date.  per the algorithm, 
+// create a distribution of the incidents by date.  per the algorithm,
 // push records to an array to return (returnedArray)
 //
   function createDistribution (array, limits) {
     var intervals;
     var returnedArray = new Array ();
-  
+
     intervals = Math.floor (array.length / limits);
 
     for (i = 0; i < limits; i++ ) {
@@ -178,16 +176,16 @@ function findDateRange () {
       temp = (apdDataBase [midPoint].date).split ("T");
       midPointDate = temp [ 0 ];
       midPointMoment = moment (midPointDate).unix();
-         
+
       if (fromMoment < midPointMoment ) {
-        topIndex = midPoint; 
+        topIndex = midPoint;
       }
       else {
-        bottomIndex = midPoint;    
+        bottomIndex = midPoint;
       }
-    } 
+    }
 
-    // midpoint currently points to a record with the from date; 
+    // midpoint currently points to a record with the from date;
     // index to the first record with the from date
     while ( fromMoment == midPointMoment) {
       midPoint--;
@@ -195,9 +193,9 @@ function findDateRange () {
       midPointDate = temp [ 0 ];
       midPointMoment = moment (midPointDate).unix();
     }
-    midPoint++;   
+    midPoint++;
     boundsRecords.fromPoint = midPoint;
-   
+
     // to date range
     // do a binary search to locate a record with the to date
     topIndex = apdDataBase.length - 1;
@@ -208,16 +206,16 @@ function findDateRange () {
       temp = (apdDataBase [midPoint].date).split ("T");
       midPointDate = temp [ 0 ];
       midPointMoment = moment (midPointDate).unix();
-         
+
       if (toMoment < midPointMoment ) {
-        topIndex = midPoint; 
+        topIndex = midPoint;
       }
       else {
-        bottomIndex = midPoint;    
+        bottomIndex = midPoint;
       }
-    } 
+    }
 
-    // midpoint currently points to a record with the to date; 
+    // midpoint currently points to a record with the to date;
     // index to the last record with the to date
     while ( toMoment == midPointMoment) {
       midPoint++;
@@ -252,7 +250,6 @@ function findDateRange () {
         drugs: ["DRUG", "CONTROLLED", "MARIJUANA"]
       };
     }
-
 
    return {
       init: initDatabase,
