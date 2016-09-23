@@ -253,10 +253,31 @@ function findDateRange () {
       };
     }
 
+//
+// from a keyword return the category that keyword is found in
+//
+    function getCategory (keyword) {
+       var list = getCategoryList();
+       var objectProperties = Object.keys(list);
+
+       var property;
+       keyword = keyword.toUpperCase();
+
+       for (i = 0; i < objectProperties.length; i++) {
+        property = objectProperties [ i ];
+        if ($.inArray(keyword, list [ property]) > -1){
+          return property;
+          break;
+         }
+       }
+      return false;
+    }
+
 
    return {
       init: initDatabase,
-      getData: getData
+      getData: getData,
+      getCategory: getCategory
    };
 
 })(jQuery);
