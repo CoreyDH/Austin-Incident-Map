@@ -52,7 +52,7 @@ createContentString: function(incident, time){
 
 //This function will display the map
 function initMap() {
-  //variable to create the google maps geocoder to be use to change from an address to a lng and lat. 
+  //variable to create the google maps geocoder to be use to change from an address to a lng and lat.
   geocode= new google.maps.Geocoder();
 
   //variable for the min zoom level to use on google maps
@@ -89,7 +89,7 @@ function initMap() {
 
   //listener to limit the zoom on the map
   google.maps.event.addListener(map, 'zoom_changed', function() {
-    if (map.getZoom()<minZoomLevel){ 
+    if (map.getZoom()<minZoomLevel){
     map.setZoom(11);
     }
   });
@@ -116,6 +116,7 @@ function createMarkers(incidentAddress, incidentWindow, category){
   var image=mapArray.selectIcon(category);
   infoWindows.push(incidentWindow);
   geocode.geocode({'address': address}, function(results, status) {
+      // console.log(status);
       if(status === 'OVER_QUERY_LIMIT') {
           setTimeout(function() {
             createMarkers(incidentAddress, incidentWindow, category);

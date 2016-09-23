@@ -18,7 +18,7 @@
           console.log(searchObj);
           if(typeof searchObj === 'object') {
             plotMarkers(data.getData(searchObj));
-            console.log(data.getData(searchObj));
+            // console.log(data.getData(searchObj));
           }
 
 
@@ -29,6 +29,8 @@
 
             this.limit = this.getLimit();
             this.date = this.getDate();
+            this.categories = '';
+            this.keyword = '';
 
             if(type === 'category') {
               this.categories = this.getCategories();
@@ -176,7 +178,6 @@
 
 
   data.init(function(dateRange) {
-    console.log(dateRange);
     if(dateRange) {
       ui.loadDatepicker(dateRange);
       ui.initListeners();
