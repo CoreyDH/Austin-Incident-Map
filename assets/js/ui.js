@@ -14,11 +14,19 @@
         $('.search').on('click', function() {
 
           var searchObj = search.createObject($(this).attr('data-search'));
+          
+          if(!(searchObj instanceof Array)) {
 
-          console.log(searchObj);
-          if(typeof searchObj === 'object') {
-            plotMarkers(data.getData(searchObj));
-            // console.log(data.getData(searchObj));
+            var results = data.getData(searchObj);
+
+            if(results.length !== 0) {
+              plotMarkers(results);
+            } else {
+              swal('Nothing!', 'No search results found!', 'warning');
+            }
+
+          } else {
+            swal('Validation Error', searchObj.join('<br>'), 'error');
           }
 
 
