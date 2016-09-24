@@ -2,7 +2,59 @@
 var markers = [];
 var infoWindows = [];
 var geocode;
+var geocodeData;
 var map;
+
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBL7eL1YZG4_5J1khX_taIydR_rlHp2KaM",
+  authDomain: "austin-geocode.firebaseapp.com",
+  databaseURL: "https://austin-geocode.firebaseio.com",
+  storageBucket: "",
+  messagingSenderId: "319957683456"
+};
+
+firebase.initializeApp(config);
+
+var fb = firebase.database().ref();
+
+getGeocodeData();
+
+function getGeocodeData() {
+  fb.once('value', function(snapshot) {
+    geocodeData = snapshot.val();
+    console.log(geocodeData);
+    // fb.set({});
+  });
+}
+
+function searchGeocode(address) {
+
+  var coord;
+
+  if(geocodeData) {
+    Object.keys(geocodeData).forEach(function(key) {
+      console.log(geocodeData[key].address, address);
+      if(geocodeData[key].address === address) {
+        coord = {
+          lat: geocodeData[key].lat,
+          lng: geocodeData[key].lng
+        };
+
+        return;
+      }
+    });
+  }
+
+  console.log(coord);
+
+  return coord;
+}
+
+fb.on('child_added', function(snapshot) {
+  geocodeData = snapshot.val();
+});
+
 var mapArray = {
     selectIcon: function(category) {
         var icon;
@@ -122,29 +174,48 @@ function createMarkers(incidentAddress, incidentWindow, category) {
     var address = incidentAddress + ", Austin, TX";
     var image = mapArray.selectIcon(category);
     infoWindows.push(incidentWindow);
-    geocode.geocode({
-        'address': address
-    }, function(results, status) {
-        if (status === 'OVER_QUERY_LIMIT') {
-            setTimeout(function() {
-                createMarkers(incidentAddress, incidentWindow, category);
-            }, 100);
-        }
-        if (status === 'OK') {
-            var marker = new google.maps.Marker({
-                map: map,
-                icon: image,
-                position: results[0].geometry.location
-            });
-            marker.addListener('click', function() {
-                for (var i = 0; i < infoWindows.length; i++) {
-                    infoWindows[i].close();
-                }
-                incidentWindow.open(map, marker);
-            });
-            markers.push(marker);
-        }
-    });
+
+
+    // new google.maps.LatLng( -34.397,150.644)
+    var coord = searchGeocode(incidentAddress);
+    if(coord) {
+      addMarker(new google.maps.LatLng(coord.lat, coord.lng), incidentWindow);
+    } else {
+      geocode.geocode({
+          'address': address
+      }, function(results, status) {
+          if (status === 'OVER_QUERY_LIMIT') {
+              setTimeout(function() {
+                  createMarkers(incidentAddress, incidentWindow, category);
+              }, 100);
+          }
+          if (status === 'OK') {
+              addMarker(results[0].geometry.location, incidentWindow);
+              fb.push({
+                address: incidentAddress,
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+              });
+          }
+      });
+    }
+
+}
+
+function addMarker(latlng, incidentWindow) {
+  var marker = new google.maps.Marker({
+      map: map,
+      // icon: image,
+      position: latlng
+  });
+  marker.addListener('click', function() {
+      for (var i = 0; i < infoWindows.length; i++) {
+          infoWindows[i].close();
+      }
+      incidentWindow.open(map, marker);
+  });
+
+  markers.push(marker);
 }
 
 function plotMarkers(arrayToPlot) {
