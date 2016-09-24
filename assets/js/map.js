@@ -2,9 +2,11 @@
 var markers = [];
 var infoWindows = [];
 var geocode;
-var geocodeData;
+var geocodeData = [];
 var map;
 
+
+// Firebase
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyBL7eL1YZG4_5J1khX_taIydR_rlHp2KaM",
@@ -18,15 +20,9 @@ firebase.initializeApp(config);
 
 var fb = firebase.database().ref();
 
-getGeocodeData();
-
-function getGeocodeData() {
-  fb.once('value', function(snapshot) {
-    geocodeData = snapshot.val();
-    console.log(geocodeData);
-    // fb.set({});
-  });
-}
+fb.on('child_added', function(snapshot) {
+  geocodeData.push(snapshot.val());
+});
 
 function searchGeocode(address) {
 
@@ -34,7 +30,6 @@ function searchGeocode(address) {
 
   if(geocodeData) {
     Object.keys(geocodeData).forEach(function(key) {
-      console.log(geocodeData[key].address, address);
       if(geocodeData[key].address === address) {
         coord = {
           lat: geocodeData[key].lat,
@@ -46,30 +41,39 @@ function searchGeocode(address) {
     });
   }
 
-  console.log(coord);
-
   return coord;
 }
 
-fb.on('child_added', function(snapshot) {
-  geocodeData = snapshot.val();
-});
+// End Firebase
 
+// Start Map
 var mapArray = {
-    selectIcon: function(category) {
+    selectIcon: function(incident) {
+
+        var category = data.getCategory(incident);
+        var path = 'assets/images/';
         var icon;
-        if (category.includes('ASSAULT')) {
-            icon = "assets/images/robbery.png";
-        } else if (category.includes('PROPERTY')) {
-            icon = "assets/images/house.png";
-        } else if (category.includes('THIEFT')) {
-            icon = "assets/images/theft.png";
-        } else if (category.includes('ACCIDENT')) {
-            icon = "assets/images/caraccident.png";
-        } else if (category.includes('DRUG')) {
-            icon = "assets/images/marijuana.png";
+
+        console.log(category);
+        switch(category) {
+          case 'violent' :
+            icon = 'shooting.png';
+            break;
+          case 'property' :
+            icon = 'house.png';
+            break;
+          case 'theft' :
+            icon = 'robbery.png';
+            break;
+          case 'accident' :
+            icon = 'caraccident.png';
+            break;
+          case 'drugs' :
+            icon = 'marijuana.png';
+            break;
         }
-        return icon;
+
+        return icon ? path+icon : icon;
     },
 
     convertTime: function(time) {
@@ -172,14 +176,12 @@ function deleteMarkers() {
 
 function createMarkers(incidentAddress, incidentWindow, category) {
     var address = incidentAddress + ", Austin, TX";
-    var image = mapArray.selectIcon(category);
     infoWindows.push(incidentWindow);
 
-
-    // new google.maps.LatLng( -34.397,150.644)
     var coord = searchGeocode(incidentAddress);
+
     if(coord) {
-      addMarker(new google.maps.LatLng(coord.lat, coord.lng), incidentWindow);
+      addMarker(new google.maps.LatLng(coord.lat, coord.lng), incidentWindow, category);
     } else {
       geocode.geocode({
           'address': address
@@ -187,10 +189,10 @@ function createMarkers(incidentAddress, incidentWindow, category) {
           if (status === 'OVER_QUERY_LIMIT') {
               setTimeout(function() {
                   createMarkers(incidentAddress, incidentWindow, category);
-              }, 100);
+              }, 200);
           }
           if (status === 'OK') {
-              addMarker(results[0].geometry.location, incidentWindow);
+              addMarker(results[0].geometry.location, incidentWindow, category);
               fb.push({
                 address: incidentAddress,
                 lat: results[0].geometry.location.lat(),
@@ -202,10 +204,12 @@ function createMarkers(incidentAddress, incidentWindow, category) {
 
 }
 
-function addMarker(latlng, incidentWindow) {
+function addMarker(latlng, incidentWindow, category) {
+  var image = mapArray.selectIcon(category);
+
   var marker = new google.maps.Marker({
       map: map,
-      // icon: image,
+      icon: image,
       position: latlng
   });
   marker.addListener('click', function() {

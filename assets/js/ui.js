@@ -14,7 +14,7 @@
         $('.search').on('click', function() {
 
           var searchObj = search.createObject($(this).attr('data-search'));
-          
+
           if(!(searchObj instanceof Array)) {
 
             var results = data.getData(searchObj);
@@ -29,7 +29,13 @@
             swal('Validation Error', searchObj.join('<br>'), 'error');
           }
 
+        });
 
+        $('#keyword').keyup(function(event) {
+          event.preventDefault();
+          if(event.which === 13) {
+            $('#searchByKeyword').click();
+          }
         });
 
         var search = {
@@ -73,6 +79,7 @@
             if(!$.isEmptyObject(obj)) {
               obj.limit = this.limit;
 
+              console.log(obj.keyword, obj.categories);
               if(obj.keyword || obj.categories) {
                 return obj;
               } else {

@@ -245,7 +245,7 @@ var data = (function($) {
 
     function getCategoryList() {
         return {
-            violent: ["ASSAULT", "ASLT", "FORCED SODOMY", "KIDNAPPING", "RAPE", "MANSLAUGHTER", "MURDER"],
+            violent: ["ASSAULT", "ASLT", "FORCED SODOMY", "KIDNAPPING", "RAPE", "MANSLAUGHTER", "MURDER", "DEADLY"],
             property: ["BURGLARY", "BURG", "MISCHIEF"],
             theft: ["THEFT", "ROBBERY"],
             accident: ["CRASH"],
@@ -256,20 +256,21 @@ var data = (function($) {
     //
     // from a keyword return the category that keyword is found in
     //
-    function getCategory(keyword) {
+    function getCategory(incident) {
         var list = getCategoryList();
-        var objectProperties = Object.keys(list);
+        incident = incident.toUpperCase();
+        var category;
 
-        var property;
-        keyword = keyword.toUpperCase();
+        Object.keys(list).forEach(function(key) {
 
-        for (i = 0; i < objectProperties.length; i++) {
-            property = objectProperties[i];
-            if ($.inArray(keyword, list[property]) > -1) {
-                return property;
+          for(var i=0; i < list[key].length; i++) {
+            if(incident.indexOf(list[key][i]) !== -1) {
+              category = key;
             }
-        }
-        return false;
+          }
+        });
+
+        return category;
     }
 
     return {
