@@ -1,3 +1,4 @@
+var mapApp=(function($, data) {
 //global variables
 var markers = [];
 var infoWindows = [];
@@ -5,16 +6,17 @@ var geocode;
 var map;
 var mapArray = {
     selectIcon: function(category) {
+        var selCat=data.getCategory(category);
         var icon;
-        if (category.includes('ASSAULT')) {
+        if (selCat.includes('ASSAULT')) {
             icon = "assets/images/robbery.png";
-        } else if (category.includes('PROPERTY')) {
+        } else if (selCat.includes('PROPERTY')) {
             icon = "assets/images/house.png";
-        } else if (category.includes('THIEFT')) {
+        } else if (selCat.includes('THIEFT')) {
             icon = "assets/images/theft.png";
-        } else if (category.includes('ACCIDENT')) {
+        } else if (selCat.includes('ACCIDENT')) {
             icon = "assets/images/caraccident.png";
-        } else if (category.includes('DRUG')) {
+        } else if (selCat.includes('DRUG')) {
             icon = "assets/images/marijuana.png";
         }
         return icon;
@@ -54,7 +56,7 @@ var mapArray = {
 };
 
 //This function will display the map
-function initMap() {
+window.initMap=function() {
     //variable to create the google maps geocoder to be use to change from an address to a lng and lat.
     geocode = new google.maps.Geocoder();
 
@@ -160,3 +162,10 @@ function plotMarkers(arrayToPlot) {
         createMarkers(key[i].address, incidentWindow, key[i].crime_type);
     }
 }
+
+return{
+  plotMarkers: plotMarkers
+
+};
+
+})(jQuery);

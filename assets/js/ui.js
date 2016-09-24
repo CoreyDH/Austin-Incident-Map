@@ -1,4 +1,4 @@
-(function($, data) {
+(function($, data, mapApp) {
   $(function() {
 
     var ui = {
@@ -17,7 +17,7 @@
 
           console.log(searchObj);
           if(typeof searchObj === 'object') {
-            plotMarkers(data.getData(searchObj));
+            mapApp.plotMarkers(data.getData(searchObj));
             console.log(data.getData(searchObj));
           }
 
@@ -186,4 +186,4 @@
   ui.initUI();
 
   });
-})(jQuery, data);
+})(jQuery, data, mapApp);
