@@ -14,7 +14,7 @@
         $('.search').on('click', function() {
 
           var searchObj = search.createObject($(this).attr('data-search'));
-          
+
           if(!(searchObj instanceof Array)) {
 
             var results = data.getData(searchObj);
@@ -29,7 +29,13 @@
             swal('Validation Error', searchObj.join('<br>'), 'error');
           }
 
+        });
 
+        $('#keyword').keyup(function(event) {
+          event.preventDefault();
+          if(event.which === 13) {
+            $('#searchByKeyword').click();
+          }
         });
 
         var search = {
@@ -126,7 +132,8 @@
               defaultDate: dateRange.from,
               changeMonth: true,
               numberOfMonths: 1,
-              minDate: dateRange.from
+              minDate: dateRange.from,
+              maxDate: dateRange.to
             })
             .on( "change", function() {
               to.datepicker("option", "minDate", getDate(this));
@@ -135,6 +142,7 @@
             defaultDate: dateRange.to,
             changeMonth: true,
             numberOfMonths: 1,
+            minDate: dateRange.from,
             maxDate: dateRange.to
           })
           .on( "change", function() {

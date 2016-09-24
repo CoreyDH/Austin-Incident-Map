@@ -2,8 +2,78 @@
 var markers = [];
 var infoWindows = [];
 var geocode;
+var geocodeData = [];
 var map;
+
+
+// Firebase
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBL7eL1YZG4_5J1khX_taIydR_rlHp2KaM",
+  authDomain: "austin-geocode.firebaseapp.com",
+  databaseURL: "https://austin-geocode.firebaseio.com",
+  storageBucket: "",
+  messagingSenderId: "319957683456"
+};
+
+firebase.initializeApp(config);
+
+var fb = firebase.database().ref();
+
+fb.on('child_added', function(snapshot) {
+  geocodeData.push(snapshot.val());
+});
+
+function searchGeocode(address) {
+
+  var coord;
+
+  if(geocodeData) {
+    Object.keys(geocodeData).forEach(function(key) {
+      if(geocodeData[key].address === address) {
+        coord = {
+          lat: geocodeData[key].lat,
+          lng: geocodeData[key].lng
+        };
+
+        return;
+      }
+    });
+  }
+
+  return coord;
+}
+
+// End Firebase
+
+// Start Map
 var mapArray = {
+    selectIcon: function(incident) {
+
+        var category = data.getCategory(incident);
+        var path = 'assets/images/';
+        var icon;
+        
+        switch(category) {
+          case 'violent' :
+            icon = 'shooting.png';
+            break;
+          case 'property' :
+            icon = 'house.png';
+            break;
+          case 'theft' :
+            icon = 'robbery.png';
+            break;
+          case 'accident' :
+            icon = 'caraccident.png';
+            break;
+          case 'drugs' :
+            icon = 'marijuana.png';
+            break;
+        }
+
+        return icon ? path+icon : icon;
+    },
     convertTime: function(time) {
         var hours = '',
             minutes = '',
@@ -105,28 +175,49 @@ function deleteMarkers() {
 function createMarkers(incidentAddress, incidentWindow, category) {
     var address = incidentAddress + ", Austin, TX";
     infoWindows.push(incidentWindow);
-    geocode.geocode({
-        'address': address
-    }, function(results, status) {
-        if (status === 'OVER_QUERY_LIMIT') {
-            setTimeout(function() {
-                createMarkers(incidentAddress, incidentWindow, category);
-            }, 100);
-        }
-        if (status === 'OK') {
-            var marker = new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location
-            });
-            marker.addListener('click', function() {
-                for (var i = 0; i < infoWindows.length; i++) {
-                    infoWindows[i].close();
-                }
-                incidentWindow.open(map, marker);
-            });
-            markers.push(marker);
-        }
-    });
+
+    var coord = searchGeocode(incidentAddress);
+
+    if(coord) {
+      addMarker(new google.maps.LatLng(coord.lat, coord.lng), incidentWindow, category);
+    } else {
+      geocode.geocode({
+          'address': address
+      }, function(results, status) {
+          if (status === 'OVER_QUERY_LIMIT') {
+              setTimeout(function() {
+                  createMarkers(incidentAddress, incidentWindow, category);
+              }, 200);
+          }
+          if (status === 'OK') {
+              addMarker(results[0].geometry.location, incidentWindow, category);
+              fb.push({
+                address: incidentAddress,
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+              });
+          }
+      });
+    }
+
+}
+
+function addMarker(latlng, incidentWindow, category) {
+  var image = mapArray.selectIcon(category);
+
+  var marker = new google.maps.Marker({
+      map: map,
+      icon: image,
+      position: latlng
+  });
+  marker.addListener('click', function() {
+      for (var i = 0; i < infoWindows.length; i++) {
+          infoWindows[i].close();
+      }
+      incidentWindow.open(map, marker);
+  });
+
+  markers.push(marker);
 }
 
 function plotMarkers(arrayToPlot) {

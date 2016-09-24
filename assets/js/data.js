@@ -40,7 +40,7 @@ var data = (function($) {
     // find the first and last dates in the apd data, store them, and return them
     //
     function findDateRange() {
-        var dateRange = new Array();
+        var dateRange = [];
 
         defaults.dateRange.from = apdDataBase[0].date.split("T")[0];
         defaults.dateRange.to = apdDataBase[apdDataBase.length - 1].date.split("T")[0];
@@ -55,16 +55,51 @@ var data = (function($) {
     // getData:  the main routine called by the app
     //
 
+    function getDateDiff(dateFrom, dateTo) {
+
+      return moment(dateTo, 'MM/DD/YYYY').diff(moment(dateFrom, 'MM/DD/YYYY'), 'days');
+    }
+
+    function getDBDateFormat(date) {
+      return moment(date, 'MM/DD/YYYY').format('YYYY-MM-DD');
+    }
+
+    function getBounds(dateFrom, dateTo) {
+
+      var start, end;
+
+      for(var i = 0; i < apdDataBase.length; i++) {
+        if(apdDataBase[i].date.split('T')[0] === dateFrom) {
+          start = i;
+          break;
+        }
+      }
+
+      for(var j = apdDataBase.length-1; j >= start; j--) {
+        if(apdDataBase[j].date.split('T')[0] === dateTo) {
+          end = j;
+          break;
+        }
+      }
+
+      start = start || 0;
+      end  = end || apdDataBase.length;
+
+      return {
+        start: start,
+        end: end
+      };
+
+    }
+
     var getData = function(constraints) {
 
         var incidentArray = []; // to be returned to caller
-        var search_list = new Array();
+        var search_list = [];
         var dbLength = apdDataBase.length;
         var dateRangeFlag;
         var startPoint;
         var endPoint;
-        var recordsLimit;
-        var bounds;
 
         var limit = constraints.limit || dbLength;
         var actionable_constraints = $.extend(defaults, constraints);
@@ -88,24 +123,23 @@ var data = (function($) {
 
         // default: not a date range; set search bounds to the index of
         // record 0 in the database and the last record in the database
-        dateRangeFlag = false;
+        // dateRangeFlag = false;
         endPoint = apdDataBase.length - 1;
         startPoint = 0;
-        recordsLimit = apdDataBase.limit;
 
         // on if: this is a date range search; call setSearchBounds to set
         // the search bounds to the index of the first record in the from date
         // and the last record in the to date
-        if (constraints.hasOwnProperty('dateRange')) {
-            bounds = setSearchBounds(constraints.dateRange);
-            dateRangeFlag = true;
-            startPoint = bounds.fromPoint;
-            endPoint = bounds.toPoint;
-            recordsLimit = apdDataBase.length;
-        }
+        // if (constraints.hasOwnProperty('dateRange')) {
+        //     bounds = setSearchBounds(constraints.dateRange);
+        //     dateRangeFlag = true;
+        //     startPoint = bounds.fromPoint;
+        //     endPoint = bounds.toPoint;
+        // }
 
+        var bounds = getBounds(getDBDateFormat(constraints.date.from), getDBDateFormat(constraints.date.to));
 
-        for (var i = endPoint; i >= startPoint; i--) {
+        for (var i = bounds.end; i >= bounds.start; i--) {
             var j = 0;
             while (j < search_list.length) {
                 if (apdDataBase[i].crime_type.includes(search_list[j])) {
@@ -116,7 +150,7 @@ var data = (function($) {
                 } //else
             } //while
 
-            if (incidentArray.length === limit && !dateRangeFlag) {
+            if (incidentArray.length === limit) {
                 break;
             }
         } //for
@@ -137,7 +171,7 @@ var data = (function($) {
     //
     function createDistribution(array, limits) {
         var intervals;
-        var returnedArray = new Array();
+        var returnedArray = [];
 
         intervals = Math.floor(array.length / limits);
 
@@ -245,7 +279,7 @@ var data = (function($) {
 
     function getCategoryList() {
         return {
-            violent: ["ASSAULT", "ASLT", "FORCED SODOMY", "KIDNAPPING", "RAPE", "MANSLAUGHTER", "MURDER"],
+            violent: ["ASSAULT", "ASLT", "FORCED SODOMY", "KIDNAPPING", "RAPE", "MANSLAUGHTER", "MURDER", "DEADLY"],
             property: ["BURGLARY", "BURG", "MISCHIEF"],
             theft: ["THEFT", "ROBBERY"],
             accident: ["CRASH"],
@@ -256,20 +290,21 @@ var data = (function($) {
     //
     // from a keyword return the category that keyword is found in
     //
-    function getCategory(keyword) {
+    function getCategory(incident) {
         var list = getCategoryList();
-        var objectProperties = Object.keys(list);
+        incident = incident.toUpperCase();
+        var category;
 
-        var property;
-        keyword = keyword.toUpperCase();
+        Object.keys(list).forEach(function(key) {
 
-        for (i = 0; i < objectProperties.length; i++) {
-            property = objectProperties[i];
-            if ($.inArray(keyword, list[property]) > -1) {
-                return property;
+          for(var i=0; i < list[key].length; i++) {
+            if(incident.indexOf(list[key][i]) !== -1) {
+              category = key;
             }
-        }
-        return false;
+          }
+        });
+
+        return category;
     }
 
     return {
