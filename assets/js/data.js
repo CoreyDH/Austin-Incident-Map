@@ -251,7 +251,7 @@ function findDateRange () {
       };
     }
 
-    function getCategory(keyword) {
+    var getCategory = function(keyword) {
         var list = getCategoryList();
         var objectProperties = Object.keys(list);
         var property;
@@ -265,12 +265,12 @@ function findDateRange () {
             }
         }
         return false;
-    }
+    };
 
    return {
       init: initDatabase,
       getData: getData,
-      getCategory: getCategory,
+      getCategory: getCategory
    };
 
 })(jQuery);

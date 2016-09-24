@@ -4,9 +4,10 @@ var markers = [];
 var infoWindows = [];
 var geocode;
 var map;
+
 var mapArray = {
     selectIcon: function(category) {
-        var selCat=data.getCategory(category);
+        var selCat = data.getCategory(category);
         var icon;
         if (selCat.includes('ASSAULT')) {
             icon = "assets/images/robbery.png";
@@ -168,4 +169,4 @@ return{
 
 };
 
-})(jQuery);
+})(jQuery, data);
