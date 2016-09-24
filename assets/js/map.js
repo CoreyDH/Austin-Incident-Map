@@ -4,22 +4,6 @@ var infoWindows = [];
 var geocode;
 var map;
 var mapArray = {
-    selectIcon: function(category) {
-        var icon;
-        if (category.includes('ASSAULT')) {
-            icon = "assets/images/robbery.png";
-        } else if (category.includes('PROPERTY')) {
-            icon = "assets/images/house.png";
-        } else if (category.includes('THIEFT')) {
-            icon = "assets/images/theft.png";
-        } else if (category.includes('ACCIDENT')) {
-            icon = "assets/images/caraccident.png";
-        } else if (category.includes('DRUG')) {
-            icon = "assets/images/marijuana.png";
-        }
-        return icon;
-    },
-
     convertTime: function(time) {
         var hours = '',
             minutes = '',
@@ -120,7 +104,6 @@ function deleteMarkers() {
 
 function createMarkers(incidentAddress, incidentWindow, category) {
     var address = incidentAddress + ", Austin, TX";
-    var image = mapArray.selectIcon(category);
     infoWindows.push(incidentWindow);
     geocode.geocode({
         'address': address
@@ -133,7 +116,6 @@ function createMarkers(incidentAddress, incidentWindow, category) {
         if (status === 'OK') {
             var marker = new google.maps.Marker({
                 map: map,
-                icon: image,
                 position: results[0].geometry.location
             });
             marker.addListener('click', function() {
