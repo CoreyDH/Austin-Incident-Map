@@ -251,21 +251,20 @@ function findDateRange () {
       };
     }
 
-    var getCategory = function(keyword) {
+    function getCategory(sentence) {
         var list = getCategoryList();
         var objectProperties = Object.keys(list);
+        var words=sentence.split(" ");
         var property;
-        keyword = keyword.toUpperCase();
 
-        for (i = 0; i < objectProperties.length; i++) {
+        for (i = 0; i <objectProperties.length; i++) {
             property = objectProperties[i];
-            if ($.inArray(keyword, list[property]) > -1) {
-                console.log(property);
-                return property;
+          if (words.search(property) > -1) {
+              return property;
             }
         }
-        return false;
-    };
+
+    }
 
    return {
       init: initDatabase,
