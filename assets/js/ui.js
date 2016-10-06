@@ -167,6 +167,14 @@
         $('.menu-wrapper').toggleClass('open');
       });
 
+      $('.search').on('click', function() {
+        if(window.innerWidth  <= 544) {
+          $('.menu-wrapper').removeClass('open');
+        }
+      });
+
+
+
       // Checkbox
       $('#category-filters > li').on('click', function(event) {
 
